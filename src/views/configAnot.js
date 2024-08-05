@@ -31,7 +31,6 @@ const ConfigAnot = ({ navigation }) => {
       <View style={styles.formWrapper}>
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
-            <Text>Partido:</Text>
             <Picker
               selectedValue={partido}
               onValueChange={setPartido}
@@ -44,7 +43,6 @@ const ConfigAnot = ({ navigation }) => {
             </Picker>
           </View>
           <View style={styles.inputGroup}>
-            <Text>Duración (minutos):</Text>
             <TextInput
               style={styles.input}
               value={duracion}
@@ -54,7 +52,6 @@ const ConfigAnot = ({ navigation }) => {
             />
           </View>
           <View style={styles.inputGroup}>
-            <Text>Entretiempo (minutos):</Text>
             <TextInput
               style={styles.input}
               value={entretiempo}
@@ -64,7 +61,6 @@ const ConfigAnot = ({ navigation }) => {
             />
           </View>
           <View style={styles.inputGroup}>
-            <Text>Cantidad de tiempos:</Text>
             <TextInput
               style={styles.input}
               value={tiempos}

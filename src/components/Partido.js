@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+const { width: screenWidth } = Dimensions.get('window');
 
 const Partido = ({ numero, fecha, puntos, equipos }) => {
+  const navigation = useNavigation(); 
+
   return (
     <View style={styles.partidoContainer}>
       <View style={styles.iconContainer}>
@@ -16,9 +19,9 @@ const Partido = ({ numero, fecha, puntos, equipos }) => {
         <Text style={styles.equiposText}>{equipos}</Text>
       </View>
       <View>
-      <TouchableOpacity style={styles.button}>
-        <Image source={require('../images/flechaderecha.png')} style={styles.image} />
-      </TouchableOpacity> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('statsPartido')}>
+          <Image source={require('../images/flechaderecha.png')} style={styles.image} />
+        </TouchableOpacity> 
       </View>
     </View>
   );
@@ -39,7 +42,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginLeft: 10,
     marginRight: 10,
-    
+    width: screenWidth * 0.88,
+    height: 130
   },
   iconContainer: {
     justifyContent: 'center',
@@ -47,8 +51,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
   },
   infoContainer: {
     flex: 1,
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   equiposText: {
-    fontSize: 14,
+    fontSize: 10,
   },
   button: {
     backgroundColor: '#2E98FA',
@@ -77,7 +81,7 @@ const styles = StyleSheet.create({
     height: 20,
     tintColor: 'white',
   },
-  image:{
+  image: {
     width: 20,
     height: 20
   }

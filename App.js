@@ -12,8 +12,7 @@ import crearPartido from './src/views/crearPartido.'
 import login from './src/views/login'
 import statsJugador from './src/views/statsJugador'
 import startJugadorxPartido from './src/views/statsJugadorxPartido'
-import statsPartido from './src/views/statsJugador'
-import verPartido from './src/views/verPartido'
+import statsPartido from './src/views/statsPartido'
 import ConfigAnot from './src/views/configAnot';
 
 const Stack = createNativeStackNavigator();
@@ -65,10 +64,6 @@ function MyStack() {
         <Stack.Screen
           name="statsPartido"
           component={statsPartido}
-        />
-        <Stack.Screen
-          name="verPartido"
-          component={verPartido}
         />
         <Stack.Screen
           name="ConfigAnot"

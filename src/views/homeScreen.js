@@ -40,7 +40,7 @@ const HomeScreen = ({navigation}) => {
               <Image source={require('../images/BarraPartidosbarPartido.png')} style={styles.barEquip}/>
             </View>
           <View style={styles.partidosContainer}>
-            <Partido numero="1" fecha="24/4" puntos="34-12" equipos="Equipo 3 vs As.Ingenieros" />
+            <Partido numero="1" fecha="24/4" puntos="34-12" equipos="Equipo 3 vs As.Ingenieros"/>
             <Partido numero="2" fecha="20/3" puntos="3-1" equipos="Equipo 1 vs Dep.Tortugas" />
             <Partido numero="3" fecha="12/2" puntos="92-80" equipos="Equipo 2 vs Dep.Puerrreydon" />
           </View>

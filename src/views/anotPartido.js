@@ -115,12 +115,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
+    marginTop: 50,
   },
   match: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'right',
+    marginTop: 10,
+    marginRight: 10
   },
   contentContainer: {
     flex: 1,

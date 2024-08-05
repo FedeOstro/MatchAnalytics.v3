@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Header';
 import { View, Image, Dimensions, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
-import Partido from '../components/Equipo';
+import Partido from '../components/Partido';
 
 const AllEquipo = ({ navigation }) => {
   const partidos = [
@@ -21,18 +21,18 @@ const AllEquipo = ({ navigation }) => {
       </TouchableOpacity>
       <ScrollView>
         <View style={styles.bar}>
-          <Image source={require('../images/BarraEquiposbarEquipo.png')} style={styles.barEquip} />
+          <Image source={require('../images/BarraPartidosbarPartido.png')} style={styles.barEquip} />
         </View>
         <View style={styles.equiposContainer}>
-          {equipos.map((equipo, index) => (
+          {partidos.map((partidos, index) => (
             <View key={index} style={styles.equipoWrapper}>
-              <Equipo nombre={equipo.nombre} press={equipo.press} deporte={equipo.deporte} />
+              <Partido numero={partidos.nombre} fecha={partidos.fecha} puntos={partidos.puntos} equipos={partidos.equipos} />
             </View>
           ))}
         </View>
         <View style={styles.addButton}>
               <Button 
-                title="Añadir Equipo"
+                title="Añadir Partido"
               />
             </View>
       </ScrollView>
