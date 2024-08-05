@@ -10,7 +10,7 @@ const HomeScreen = ({navigation}) => {
   return (
       <View style={styles.container}>
         <View style={styles.header1}>
-          <Header/>
+          <Header></Header>
         </View>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.flex}>
@@ -64,7 +64,7 @@ const HomeScreen = ({navigation}) => {
                 <Button style={styles.vermas}
                   color={'#FF002E'}
                   title='Ver mas'
-                  onPress={() => navigation.navigate('allEquipo')}
+                  onPress={() => navigation.navigate('AllPartidos')}
                 />
             </View>
         </ScrollView>
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     padding: 10,
     width: screenWidth,
-    height: 23,
-    margin: 10
+    height: 34,
+    margin: 20
   },
   bar: {
     flex: 1,
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffcc66',
-    paddingTop: StatusBar.currentHeight,
   },
   logo: {
     width: 60,
@@ -152,8 +151,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   header1: {
-    alignItems: 'center',
-    height: 70
+    height: 70,
+    
   }
 });
 

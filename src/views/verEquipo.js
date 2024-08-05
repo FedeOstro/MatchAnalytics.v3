@@ -4,7 +4,7 @@ import PlayerItem from '../components/Jugadores';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
 const { height: screenHeight } = Dimensions.get('window');
-
+const { width: screenWidth } = Dimensions.get('window');
 
 const TeamScreen = ({ navigation }) => {
     const players = [
@@ -18,9 +18,12 @@ const TeamScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.headerApp}>
-            <Header />
-            </View>
+            <Header/>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+             <View style={styles.flec}>
+                <Image source={require('../images/flecha.png')}/>
+             </View>
+            </TouchableOpacity>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.header}>
                     <Image source={require('../images/football.png')} style={styles.logo} />
@@ -54,6 +57,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ffcc66',
+    },
+    flec: {
+        marginTop: 5
     },
     scrollViewContent: {
         flexGrow: 1,
@@ -100,6 +106,9 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',
+        width: screenWidth * 0.95,
+        marginLeft: 10,
+        marginBottom: 10
     },
     addButtonText: {
         color: '#fff',

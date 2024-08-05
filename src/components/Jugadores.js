@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+const { width: screenWidth } = Dimensions.get('window');
 
 const PlayerItem = ({ player }) => {
   return (
@@ -26,7 +27,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 4,
     marginTop: 4,
-    borderRadius: 10
+    borderRadius: 10,
+    width: screenWidth * 0.95
   },
   image: {
     width: 50,

@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import { View, Image, Dimensions, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Image, Dimensions, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
 import Equipo from '../components/Equipo';
 
@@ -15,6 +15,11 @@ const AllEquipo = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header />
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+       <View style={styles.flec}>
+          <Image source={require('../images/flecha.png')}/>
+        </View>
+      </TouchableOpacity>
       <ScrollView>
         <View style={styles.bar}>
           <Image source={require('../images/BarraEquiposbarEquipo.png')} style={styles.barEquip} />
@@ -41,6 +46,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffcc66',
   },
+  flec: {
+    marginTop: 5
+  },
   barEquip: {
     flex: 1,
     backgroundColor: 'lightblue',
@@ -54,7 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: screenWidth,
-    marginTop: 30
   },
   equiposContainer: {
     flexDirection: 'row',

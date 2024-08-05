@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, Image, StyleSheet, Dimensions, Alert, To
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-
+import Header from '../components/Header';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -95,8 +95,15 @@ const ConfigPartido = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Header></Header>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+       <View style={styles.flec}>
+          <Image source={require('../images/flecha.png')}/>
+        </View>
+      </TouchableOpacity>
       <Image source={require('../images/barPartido.png')} style={styles.headerImage} />
       <View style={styles.formWrapper}>
+        
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Picker
@@ -175,10 +182,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffcc66',
   },
+  flec: {
+    marginTop: 5
+  },
   headerImage: {
     width: screenWidth,
-    height: 100,
-    resizeMode: 'contain',
   },
   formWrapper: {
     flex: 1,

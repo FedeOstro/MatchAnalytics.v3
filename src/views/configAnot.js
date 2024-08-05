@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert, Image, TouchableOpacity} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../components/Header';
-
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigAnot = ({ navigation }) => {
@@ -23,8 +22,13 @@ const ConfigAnot = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header />
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+       <View style={styles.flec}>
+          <Image source={require('../images/flecha.png')}/>
+        </View>
+      </TouchableOpacity>
+      <Image source={require('../images/barraConfig.png')} style={styles.barEquip}/>
       <View style={styles.formWrapper}>
-        <Text style={styles.title}>¡Configura Tu Partido!</Text>
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Text>Partido:</Text>
@@ -79,13 +83,19 @@ const ConfigAnot = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  barEquip: {
+    width: screenWidth,
+  },
+  flec: {
+    marginTop: 5
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffcc66',
   },
   formWrapper: {
+    marginTop: 30,
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   formContainer: {
