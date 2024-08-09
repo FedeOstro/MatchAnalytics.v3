@@ -9,11 +9,21 @@ const ConfigAnot = ({ navigation }) => {
   const [duracion, setDuracion] = useState('');
   const [entretiempo, setEntretiempo] = useState('');
   const [tiempos, setTiempos] = useState('');
+  const Partidos = [
+    {equipo1: 'equipo 1', equipo2: 'equipo 2'},
+    {equipo1: 'equipo 3', equipo2: 'equipo 4'},
+    {equipo1: 'equipo 5', equipo1: 'equipo 6'},
+  ]
 
   const handleButtonPress = () => {
     if (partido !== '' && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
         Number(duracion) >= 0 && Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
-      navigation.navigate('anotarPartido');
+      navigation.navigate('anotarPartido', {
+        partido: partido, 
+        duracion: duracion,
+        entretiempo: entretiempo,
+        tiempos: tiempos,
+      });
     } else {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar. Asegúrate de que ningún campo tenga un valor menor a 0.');
     }
@@ -37,9 +47,9 @@ const ConfigAnot = ({ navigation }) => {
               style={styles.picker}
             >
               <Picker.Item label="Selecciona equipo" value="" />
-              <Picker.Item label="Partido 1" value="Partido 1" />
-              <Picker.Item label="Partido 2" value="Partido 2" />
-              <Picker.Item label="Partido 3" value="Partido 3" />
+              <Picker.Item label="Partido 1" value= {Partidos[0]} />
+              <Picker.Item label="Partido 2" value= {Partidos[1]} />
+              <Picker.Item label="Partido 3" value= {Partidos[2]} />
             </Picker>
           </View>
           <View style={styles.inputGroup}>

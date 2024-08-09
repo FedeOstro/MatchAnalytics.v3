@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import Header from '../components/Header'; 
 
-const GameScreen = () => {
+const GameScreen = ({route, navigation}) => {
+  const  {partido, duracion, entretiempo, tiempos} = route.params
+  
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [playerNumber, setPlayerNumber] = useState('');
@@ -48,9 +50,9 @@ const GameScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.time}>20:00 mins</Text>
-        <Text style={styles.period}>1 / 4</Text>
-        <Text style={styles.match}>Equipo 1 vs Sacachispas</Text>
+        <Text style={styles.time}>{JSON.stringify(duracion)}</Text>
+        <Text style={styles.period}>{JSON.stringify(tiempos)}</Text>
+        <Text style={styles.match}>{JSON.stringify(partido.equipo1 + 'vs' + partido.equipo2)}</Text>
       </View>
       <Header />
       <View style={styles.contentContainer}>
