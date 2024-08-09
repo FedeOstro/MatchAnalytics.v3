@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert, Image, TouchableOpacity} from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert, Image, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../components/Header';
+
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigAnot = ({ navigation }) => {
-  const [partido, setPartido] = useState('');
+  const [selectedPartidoIndex, setSelectedPartidoIndex] = useState(undefined);
   const [duracion, setDuracion] = useState('');
   const [entretiempo, setEntretiempo] = useState('');
   const [tiempos, setTiempos] = useState('');
+
   const Partidos = [
-    {equipo1: 'equipo 1', equipo2: 'equipo 2'},
-    {equipo1: 'equipo 3', equipo2: 'equipo 4'},
-    {equipo1: 'equipo 5', equipo1: 'equipo 6'},
-  ]
+    { equipo1: 'equipo 1', equipo2: 'equipo 2' },
+    { equipo1: 'equipo 3', equipo2: 'equipo 4' },
+    { equipo1: 'equipo 5', equipo2: 'equipo 6' },
+  ];
 
   const handleButtonPress = () => {
-    if (partido !== '' && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
+    if (selectedPartidoIndex !== undefined && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
         Number(duracion) >= 0 && Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
+      const partido = Partidos[selectedPartidoIndex];
       navigation.navigate('anotarPartido', {
-        partido: partido, 
+        partido: partido,
         duracion: duracion,
         entretiempo: entretiempo,
         tiempos: tiempos,
@@ -33,23 +36,27 @@ const ConfigAnot = ({ navigation }) => {
     <View style={styles.container}>
       <Header />
       <TouchableOpacity onPress={() => navigation.goBack()}>
-       <View style={styles.flec}>
-          <Image source={require('../images/flecha.png')}/>
+        <View style={styles.flec}>
+          <Image source={require('../images/flecha.png')} />
         </View>
       </TouchableOpacity>
-      <Image source={require('../images/barraConfig.png')} style={styles.barEquip}/>
+      <Image source={require('../images/barraConfig.png')} style={styles.barEquip} />
       <View style={styles.formWrapper}>
         <View style={styles.formContainer}>
           <View style={styles.inputGroup}>
             <Picker
-              selectedValue={partido}
-              onValueChange={setPartido}
+              selectedValue={selectedPartidoIndex}
+              onValueChange={(itemValue) => setSelectedPartidoIndex(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="Selecciona equipo" value="" />
-              <Picker.Item label="Partido 1" value= {Partidos[0]} />
-              <Picker.Item label="Partido 2" value= {Partidos[1]} />
-              <Picker.Item label="Partido 3" value= {Partidos[2]} />
+              <Picker.Item label="Selecciona equipo" value={undefined} />
+              {Partidos.map((partido, index) => (
+                <Picker.Item 
+                  key={index} 
+                  label={`Partido ${index + 1}`} 
+                  value={index}
+                />
+              ))}
             </Picker>
           </View>
           <View style={styles.inputGroup}>
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
   },
   flec: {
-    marginTop: 5
+    marginTop: 5,
   },
   container: {
     flex: 1,
