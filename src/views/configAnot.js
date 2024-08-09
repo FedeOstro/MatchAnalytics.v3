@@ -6,7 +6,7 @@ import Header from '../components/Header';
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigAnot = ({ navigation }) => {
-  const [selectedPartidoIndex, setSelectedPartidoIndex] = useState(undefined);
+  const [selectedPartidoIndex, setPartidoIndex] = useState(undefined);
   const [duracion, setDuracion] = useState('');
   const [entretiempo, setEntretiempo] = useState('');
   const [tiempos, setTiempos] = useState('');
@@ -20,7 +20,7 @@ const ConfigAnot = ({ navigation }) => {
   const handleButtonPress = () => {
     if (selectedPartidoIndex !== undefined && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
         Number(duracion) >= 0 && Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
-      const partido = Partidos[selectedPartidoIndex];
+      const partido = Partidos[selectedPartidoIndex-1];
       navigation.navigate('anotarPartido', {
         partido: partido,
         duracion: duracion,
@@ -46,15 +46,15 @@ const ConfigAnot = ({ navigation }) => {
           <View style={styles.inputGroup}>
             <Picker
               selectedValue={selectedPartidoIndex}
-              onValueChange={(itemValue) => setSelectedPartidoIndex(itemValue)}
+              onValueChange={(itemValue) => {setPartidoIndex(itemValue);console.log(itemValue)}}
               style={styles.picker}
             >
               <Picker.Item label="Selecciona equipo" value={undefined} />
               {Partidos.map((partido, index) => (
                 <Picker.Item 
-                  key={index} 
+                  key={index+1} 
                   label={`Partido ${index + 1}`} 
-                  value={index}
+                  value={index+1}
                 />
               ))}
             </Picker>

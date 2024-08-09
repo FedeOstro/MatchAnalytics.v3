@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image
 import PlayerItem from '../components/Jugadores';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
+
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -18,13 +19,13 @@ const TeamScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Header/>
+            <Header />
             <TouchableOpacity onPress={() => navigation.goBack()}>
-             <View style={styles.flec}>
-                <Image source={require('../images/flecha.png')}/>
-             </View>
+                <View style={styles.flec}>
+                    <Image source={require('../images/flecha.png')} />
+                </View>
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <View style={styles.contentContainer}>
                 <View style={styles.header}>
                     <Image source={require('../images/football.png')} style={styles.logo} />
                     <View>
@@ -33,26 +34,25 @@ const TeamScreen = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.scrollData}>
-                    <View style={styles.partidosContainer}>
+                    <Text style={styles.sectionTitle}>Partidos</Text>
+                    <ScrollView style={styles.partidosContainer}>
                         <Partido numero="1" fecha="24/4" puntos="34-12" equipos="Equipo 3 vs As.Ingenieros" />
                         <Partido numero="2" fecha="20/3" puntos="3-1" equipos="Equipo 1 vs Dep.Tortugas" />
                         <Partido numero="3" fecha="12/2" puntos="92-80" equipos="Equipo 2 vs Dep.Puerrreydon" />
-                    </View>
+                    </ScrollView>
                 </View>
-                <Text style={styles.sectionTitle}>Jugadores</Text>
                 <View style={styles.scrollData}>
-                <View style={styles.playerListContainer}>
-                    <ScrollView>
+                    <Text style={styles.sectionTitle}>Jugadores</Text>
+                    <ScrollView style={styles.playerListContainer}>
                         {players.map(player => (
                             <PlayerItem key={player.id} player={player} />
                         ))}
+                        <TouchableOpacity style={styles.addButton}>
+                            <Text style={styles.addButtonText}>Añadir Nuevo</Text>
+                        </TouchableOpacity>
                     </ScrollView>
                 </View>
-                <TouchableOpacity style={styles.addButton}>
-                    <Text style={styles.addButtonText}>Añadir Nuevo</Text>
-                </TouchableOpacity>
-                </View>
-            </ScrollView>
+            </View>
         </View>
     );
 };
@@ -63,22 +63,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffcc66',
     },
     flec: {
-        marginTop: 5
+        marginTop: 5,
     },
-    scrollViewContent: {
-        flexGrow: 1,
+    contentContainer: {
+        flex: 1,
+        paddingHorizontal: 10,
     },
     scrollData: {
-        alignItems: 'center'
-    },  
+        flex: 1,
+        marginBottom: 10,
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft:10
-    },
-    headerApp:{
-        alignItems: 'center',
-        height: 70
+        marginBottom: 10,
     },
     logo: {
         width: 60,
@@ -94,18 +92,16 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     partidosContainer: {
-        alignItems: 'center',
-        marginTop: 10,
+        flex: 1,
         marginBottom: 10,
     },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
         marginVertical: 10,
-        marginLeft: 10
     },
     playerListContainer: {
-        maxHeight: screenHeight * 0.4,
+        flex: 2,
         marginBottom: 10,
     },
     addButton: {
@@ -113,9 +109,9 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',
-        width: screenWidth * 0.95,
+        width: screenWidth * 0.9,
+        marginBottom: 10,
         marginLeft: 10,
-        marginBottom: 10
     },
     addButtonText: {
         color: '#fff',

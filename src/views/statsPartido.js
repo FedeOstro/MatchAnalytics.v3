@@ -4,6 +4,7 @@ import PlayerItem from "../components/Jugadores"
 import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions, ProgressBarAndroidBase } from "react-native";
 const {width: widthScreen} = Dimensions.get('window');
 const {height: heightScreen} = Dimensions.get('window')
+import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from "react-native-chart-kit";
 
 const App = ({ navigation }) => {
     const players = [
@@ -15,14 +16,44 @@ const App = ({ navigation }) => {
         { id: '6', name: 'Player 6', number: 6, value: 29, image: 'https://via.placeholder.com/50' },
     ];
     const stats = [
-        { label: 'Puntos', value: 34, total: 45 },
-        { label: 'Tiros', value: 25, total: 45 },
-        { label: 'Faltas', value: 15, total: 25 },
-        { label: 'Tapones', value: 6, total: 12 },
-        { label: 'Recuperos', value: 14, total: 25 },
-        { label: 'Robadas', value: 10, total: 15 },
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},,
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},,
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},,
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},,
+        { labels: ["20", "10"], datasets:[{
+            data: [20,   15]
+        }]},,
     ];
     
+    const data = {
+        labels: ["Puntos", "Tiros", "Faltas", "Tapones", "May", "Recuperos"],
+        datasets: [
+          {
+            data: [20, 45, 28, 80, 99, 43]
+          }
+        ]
+    };
+    const chartConfig = {
+        backgroundGradientFrom: "#1E2923",
+        backgroundGradientFromOpacity: 0,
+        backgroundGradientTo: "#08130D",
+        backgroundGradientToOpacity: 0.5,
+        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+        strokeWidth: 2, 
+        barPercentage: 0.5,
+        useShadowColorFromDataset: false 
+    };
     return (
         <View style={styles.container}>
             <View style={styles.topBar}>
@@ -43,15 +74,14 @@ const App = ({ navigation }) => {
                     <Text style={styles.vs}>VS</Text>
                     <Image source={require('../images/log.png')} style={styles.log}/>
                 </View>
-                {stats.map((stat, index) => (
-                <View key={index} style={styles.statRow}>
-                    <Text style={styles.label}>{stat.label}</Text>
-                    <View style={styles.progressContainer}>
-                        <ProgressBarAndroidBase progress={stat.value / stat.total} width={200} color="orange" />
-                        <Text style={styles.value}>{stat.value}</Text>
-                    </View>
-                </View>
-                 ))}
+                <BarChart
+                    data={stats[0]}
+                    width={widthScreen}
+                    height={220}
+                    yAxisLabel=""
+                    chartConfig={chartConfig}
+                    verticalLabelRotation={30}
+                />
             </ScrollView>
             <Text style={styles.textitle}>Jugadores</Text>
             <View style={styles.playerListContainer}>
