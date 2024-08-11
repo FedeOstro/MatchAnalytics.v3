@@ -1,10 +1,11 @@
 import * as React from "react";
 import Header from "../components/Header";
-import PlayerItem from "../components/Jugadores"
-import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions, ProgressBarAndroidBase } from "react-native";
-const {width: widthScreen} = Dimensions.get('window');
-const {height: heightScreen} = Dimensions.get('window')
-import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from "react-native-chart-kit";
+import PlayerItem from "../components/Jugadores";
+import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions } from "react-native";
+import { BarChart } from "react-native-chart-kit";
+
+const { width: widthScreen } = Dimensions.get('window');
+const { height: heightScreen } = Dimensions.get('window');
 
 const App = ({ navigation }) => {
     const players = [
@@ -15,90 +16,104 @@ const App = ({ navigation }) => {
         { id: '5', name: 'Player 5', number: 5, value: 33, image: 'https://via.placeholder.com/50' },
         { id: '6', name: 'Player 6', number: 6, value: 29, image: 'https://via.placeholder.com/50' },
     ];
+
     const stats = [
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},,
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},,
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},,
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},,
-        { labels: ["20", "10"], datasets:[{
-            data: [20,   15]
-        }]},,
+        { labels: ["Jan", "Feb"], datasets: [{ data: [20, 15] }] },
+        { labels: ["Mar", "Apr"], datasets: [{ data: [30, 25] }] },
+        { labels: ["May", "Jun"], datasets: [{ data: [10, 5] }] },
+        { labels: ["Jul", "Aug"], datasets: [{ data: [40, 35] }] },
     ];
-    
-    const data = {
-        labels: ["Puntos", "Tiros", "Faltas", "Tapones", "May", "Recuperos"],
-        datasets: [
-          {
-            data: [20, 45, 28, 80, 99, 43]
-          }
-        ]
-    };
+
     const chartConfig = {
-        backgroundGradientFrom: "#1E2923",
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: "#08130D",
-        backgroundGradientToOpacity: 0.5,
-        color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-        strokeWidth: 2, 
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false 
+        backgroundGradientFrom: "#ffffff00", // Fondo transparente
+        backgroundGradientTo: "#ffffff00",   // Fondo transparente
+        color: () => `rgba(234, 181, 25, 1)`,
+        strokeWidth: 2,
+        barPercentage: 0.4,
+        useShadowColorFromDataset: false,
+        decimalPlaces: 0,
+        propsForBackgroundLines: {
+            stroke: 'black',
+            strokeWidth: 1,
+        },
+        propsForLabels: {
+            fontSize: 12,
+            fontWeight: 'bold',
+            fill: 'black',
+        },
+        showValuesOnTopOfBars: true, 
+        horizontalLabelRotation: 0, 
     };
+
     return (
         <View style={styles.container}>
+            <View style={styles.head}>
+            <Header />
             <View style={styles.topBar}>
                 <Text style={styles.time}>20:00 mins {'\n'} Tiempos 2</Text>
                 <Text style={styles.period}>28 / 4</Text>
                 <Text style={styles.match}>Equipo 1 vs Sacachispas</Text>
             </View>
-            <Header/>
-            <ScrollView style={styles.stats}>
-                <Image source={require('../images/barStats.png')} style={styles.bar}/>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <View style={styles.flec}>
-                        <Image source={require('../images/flecha.png')}/>
-                    </View>
-                </TouchableOpacity>
-                <View style={styles.cuadros}>
-                    <Image source={require('../images/log.png')} style={styles.log}/>
-                    <Text style={styles.vs}>VS</Text>
-                    <Image source={require('../images/log.png')} style={styles.log}/>
+            <View style={styles.header2}>
+                    <Image source={require('../images/barStats.png')} style={styles.bar} />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <View style={styles.flec}>
+                            <Image source={require('../images/flecha.png')} />
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                <BarChart
-                    data={stats[0]}
-                    width={widthScreen}
-                    height={220}
-                    yAxisLabel=""
-                    chartConfig={chartConfig}
-                    verticalLabelRotation={30}
-                />
-            </ScrollView>
-            <Text style={styles.textitle}>Jugadores</Text>
-            <View style={styles.playerListContainer}>
-                <ScrollView>
-                    {players.map(player => (
-                      <PlayerItem key={player.id} player={player} />
-                    ))}
-                </ScrollView>
             </View>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.stats}>
+                    <View style={styles.cuadros}>
+                        <Image source={require('../images/log.png')} style={styles.log} />
+                        <Text style={styles.vs}>VS</Text>
+                        <Image source={require('../images/log.png')} style={styles.log} />
+                    </View>
+                    <View style={styles.chartContainer}>
+                        {stats.map((stat, index) => (
+                            <BarChart
+                                key={index}
+                                data={stat}
+                                width={widthScreen / 2.2}
+                                height={100}
+                                chartConfig={chartConfig}
+                                style={styles.charts}
+                                withHorizontalLabels={false}
+                                fromZero={true}
+                                withVerticalLines={true} 
+                                withHorizontalLines={true}
+                            />
+                        ))}
+                    </View>
+                </View>
+                <View style={styles.playerListContainer}>
+                    <Text style={styles.textitle}>Jugadores</Text>
+                        {players.map(player => (
+                        <PlayerItem key={player.id} player={player} />
+                    ))}
+                </View>
+            </ScrollView>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    charts: {
+        transform: [{ rotate: '90deg' }],
+        marginLeft: 10,
+        marginRight: 10,
+    },
     container: {
         flex: 1,
         backgroundColor: '#ffcc66',
+    },
+    scrollView: {
+        flex: 1,
+        marginTop: -60, 
+    },
+    header2: {
+        height: 'auto'
     },
     topBar: {
         flexDirection: 'row',
@@ -108,46 +123,46 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#000',
-        position: 'absolute',
-        top: 0,
-        zIndex: 0,
+        borderBottomColor: '#000', 
+        zIndex: -1
+    },
+    head: {
+        zIndex: 1, 
+    },
+    stats: {
         marginTop: 10,
+        marginBottom: 40
     },
     time: {
         fontSize: 18,
         fontWeight: 'bold',
         flex: 1,
         textAlign: 'left',
-        marginTop: 20,
     },
-      period: {
+    period: {
         fontSize: 18,
         fontWeight: 'bold',
         flex: 1,
         textAlign: 'center',
-        marginTop: 50,
-      },
-      match: {
+        marginTop: 30,
+    },
+    match: {
         fontSize: 15,
         fontWeight: 'bold',
         flex: 1,
         textAlign: 'right',
-        marginTop: 15,
         marginRight: 10
     },
-    stats: {
-        marginTop:63
-    },
     bar: {
-        width: widthScreen
+        width: widthScreen,
+        height: 30
     },
     cuadros: {
         flexDirection: 'row',
-        justifyContent: 'center',    
+        justifyContent: 'center',
         alignItems: 'center',
     },
-    log:{
+    log: {
         height: 150,
         width: 150
     },
@@ -157,32 +172,18 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     playerListContainer: {
-        maxHeight: heightScreen * 0.4,
-        marginBottom: 10,
+        margin: 10
     },
-    textitle:{
+    textitle: {
         margin: 10,
         fontSize: 15,
         fontWeight: 'bold'
     },
-    statRow: {
+    chartContainer: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 10,
-      },
-      label: {
-        fontSize: 16,
-        width: 100,
-      },
-      progressContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-      },
-      value: {
-        marginLeft: 10,
-        fontSize: 16,
-      },
+    }
 });
 
 export default App;

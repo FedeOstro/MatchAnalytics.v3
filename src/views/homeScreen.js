@@ -27,6 +27,7 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.addButton}>
               <Button 
                 title="Añadir Equipo"
+                onPress={() => navigation.navigate('crearEquipo')}
               />
             </View>
             <View >
