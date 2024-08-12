@@ -68,7 +68,11 @@ const CrearEquipo = ({ navigation }) => {
     }
     const idusuario = 1
     console.log(equipo + imagen + deporte + idusuario)
-    await supabase.from('equipos').insert({ equipo, imagen, deporte, idusuario });
+    const {data, error } = await supabase.from('equipos').insert([{ equipo, imagen, deporte, idusuario }]).single();
+    if (error){
+      console.log(error);
+    }
+    
     Alert.alert(
       'Equipo creado',
       '¡Tu equipo ha sido creado exitosamente!',
