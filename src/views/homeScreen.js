@@ -41,6 +41,19 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
+  const getImageSource = (foto) => {
+    switch (foto) {
+      case '../images/football.png':
+        return require('../images/football.png');
+      case '../images/cesto.png':
+        return require('../images/cesto.png');
+      case '../images/basque.png':
+        return require('../images/basque.png');
+      default:
+        return require('../images/log.png');
+    }
+  };
+
   useEffect(() => {
     const fetchPost = async () => {
       const { data, error } = await supabase.from('equipo').select('*');
@@ -52,8 +65,6 @@ const HomeScreen = ({navigation}) => {
     };
     fetchPost();
   }, []);
-
-  console.log(equipos);
   
   return (
       <View style={styles.container}>
@@ -68,8 +79,8 @@ const HomeScreen = ({navigation}) => {
             <Image source={require('../images/BarraEquiposbarEquipo.png')} style={styles.barEquip}/>
           </View>
           <View style={styles.equiposContainer}>
-            {equipos.map(equipo =>(
-              <Equipo nombre={equipo.nombre} press={() => navigation.navigate('verEquipo')} deporte={equipo.deporte} imageSource={require('../images/football.png')} />
+            {equipos.slice(0,3).map(equipo =>(
+              <Equipo nombre={equipo.nombre} press={() => navigation.navigate('verEquipo')} deporte={equipo.deporte} imageSource={getImageSource(equipo.foto)} />
             ))}
           </View>
             <View style={styles.addButton}>

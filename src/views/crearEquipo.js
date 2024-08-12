@@ -5,6 +5,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Header from '../components/Header';
 import PlayerItem from '../components/Jugadores'; // Asegúrate de que este componente existe
+import { supabase } from '../../lib/supabase';
+import { date } from 'drizzle-orm/mysql-core';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -13,6 +15,7 @@ const CrearEquipo = ({ navigation }) => {
   const [deporte, setDeporte] = useState('');
   const [imagen, setImagen] = useState(null);
   const [imagenNombre, setImagenNombre] = useState('');
+  const [listDep, setlistDep] = useState([])
   const [jugadores, setJugadores] = useState([
     { id: '1', name: 'Juan Gutierrez', number: 1, rol: 2, image: 'https://via.placeholder.com/50' },
     { id: '2', name: 'Dante Verdi', number: 2, rol: 4, image: 'https://via.placeholder.com/50' },
@@ -29,6 +32,15 @@ const CrearEquipo = ({ navigation }) => {
       }
     })();
   }, []);
+
+  const handleSports = async () => {
+    const { data, error } = await supabase.from('deportes').select('*')
+    if(data){
+      setlistDep(data)
+    }else{
+      console.log(error)
+    }
+  }
 
   const handleImagePick = async () => {
     try {
@@ -49,12 +61,14 @@ const CrearEquipo = ({ navigation }) => {
     }
   };
 
-  const handleButtonPress = () => {
+  const handleButtonPress = async () => {
     if (!equipo || !deporte) {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
       return;
     }
-
+    const idusuario = 1
+    console.log(equipo + imagen + deporte + idusuario)
+    await supabase.from('equipos').insert({ equipo, imagen, deporte, idusuario });
     Alert.alert(
       'Equipo creado',
       '¡Tu equipo ha sido creado exitosamente!',
@@ -66,7 +80,7 @@ const CrearEquipo = ({ navigation }) => {
       ]
     );
   };
-
+  handleSports();
   return (
     <View style={styles.container}>
       <Header></Header>
@@ -76,7 +90,7 @@ const CrearEquipo = ({ navigation }) => {
         </View>
       </TouchableOpacity>
       <ScrollView>
-        <Image source={require('../images/barStats.png')} style={styles.bar} />
+        <Image source={require('../images/barCrearEquipo.png')} style={styles.bar} />
         <View style={styles.formWrapper}>
           <View style={styles.formContainer}>
             <TextInput
@@ -99,9 +113,10 @@ const CrearEquipo = ({ navigation }) => {
               style={styles.picker}
             >
               <Picker.Item label="Elige un deporte" value="" />
-              <Picker.Item label="Football" value="Football" />
-              <Picker.Item label="Básquet" value="Básquet" />
-              <Picker.Item label="Hockey" value="Hockey" />
+              {listDep.map(dep => (
+                <Picker.Item label={dep.nombre} value={dep.id_deporte} />
+              ))}
+              
             </Picker>
             <View style={styles.buttonContainer}>
               <Button title="Aceptar" onPress={handleButtonPress} color="#007BFF" />
