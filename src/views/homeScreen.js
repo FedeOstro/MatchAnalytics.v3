@@ -1,28 +1,60 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View, Text, StatusBar, Image, Button, Dimensions, useState, useEffect} from 'react-native';
-import { supabase } from '../lib/supabase'
+import { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions } from 'react-native';
+import { supabase } from '../../lib/supabase'
 import Equipo from '../components/Equipo';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
+import { RectButton } from 'react-native-gesture-handler';
 const { width: screenWidth } = Dimensions.get('window');
 
 
 const HomeScreen = ({navigation}) => {
-  const [posts, setPost] = useState([])
-  useEffect(() => {
-    const fetchPost = async () =>  {
-      const {data, error } = await supabase.from('posts').select
-      if(error){
-        console.log(error)
-      } else{
-        setPost(data)
-      }
-    }
+  const [equipos, setEquipos] = useState([]);
 
-    fetchPost()
-  }, [])
+  const fillImage = (data) => {
+    try {
+      const updatedEquipos = data.map(equipo => {
+        if (equipo.foto === null) {
+          switch (equipo.id_deporte) {
+            case 1:
+              equipo.foto = '../images/football.png';
+              break;
+            case 2:
+              equipo.foto = '../images/cesto.png';
+              break;
+            case 3:
+              equipo.foto = '../images/basque.png';
+              break;
+            default:
+              console.log("Error setup foto");
+              break;
+          }
+        } else {
+          console.log("Foto puesta");
+        }
+        return equipo; 
+      });
+      setEquipos(updatedEquipos); 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      const { data, error } = await supabase.from('equipo').select('*');
+      if (error) {
+        console.log(error);
+      } else {
+        fillImage(data);
+      }
+    };
+    fetchPost();
+  }, []);
+
+  console.log(equipos);
   
-  console.log(posts)
   return (
       <View style={styles.container}>
         <View style={styles.header1}>
@@ -36,9 +68,9 @@ const HomeScreen = ({navigation}) => {
             <Image source={require('../images/BarraEquiposbarEquipo.png')} style={styles.barEquip}/>
           </View>
           <View style={styles.equiposContainer}>
-            <Equipo nombre="Equipo 1" press={() => navigation.navigate('verEquipo')} deporte="football"/>
-            <Equipo nombre="Equipo 2" press={() => navigation.navigate('verEquipo')} deporte="basquet"/>
-            <Equipo nombre="Equipo 3" press={() => navigation.navigate('verEquipo')} deporte="cestoball"/>
+            {equipos.map(equipo =>(
+              <Equipo nombre={equipo.nombre} press={() => navigation.navigate('verEquipo')} deporte={equipo.deporte} imageSource={require('../images/football.png')} />
+            ))}
           </View>
             <View style={styles.addButton}>
               <Button 
