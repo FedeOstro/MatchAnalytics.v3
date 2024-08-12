@@ -42,6 +42,12 @@ const GameScreen = ({route, navigation}) => {
             </View>
           </View>
         );
+      case 'Asistencia':
+        return(
+          <View style={styles.modalContent}>
+
+          </View>
+        );
       default:
         return null;
     }

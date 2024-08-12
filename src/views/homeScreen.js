@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, ScrollView, View, Text, StatusBar, Image, Button, Dimensions} from 'react-native';
+import { StyleSheet, ScrollView, View, Text, StatusBar, Image, Button, Dimensions, useState, useEffect} from 'react-native';
+import { supabase } from '../lib/supabase'
 import Equipo from '../components/Equipo';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
@@ -7,6 +8,21 @@ const { width: screenWidth } = Dimensions.get('window');
 
 
 const HomeScreen = ({navigation}) => {
+  const [posts, setPost] = useState([])
+  useEffect(() => {
+    const fetchPost = async () =>  {
+      const {data, error } = await supabase.from('posts').select
+      if(error){
+        console.log(error)
+      } else{
+        setPost(data)
+      }
+    }
+
+    fetchPost()
+  }, [])
+  
+  console.log(posts)
   return (
       <View style={styles.container}>
         <View style={styles.header1}>
