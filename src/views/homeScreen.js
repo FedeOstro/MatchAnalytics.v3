@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase'
 import Equipo from '../components/Equipo';
 import Partido from '../components/Partido';
@@ -11,6 +11,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const HomeScreen = ({navigation}) => {
   const [equipos, setEquipos] = useState([]);
+  const transparentColor = 'rgba(255, 0, 0, 0)'
 
   const fillImage = (data) => {
     try {
@@ -83,12 +84,11 @@ const HomeScreen = ({navigation}) => {
               <Equipo nombre={equipo.nombre} press={() => navigation.navigate('verEquipo')} deporte={equipo.deporte} imageSource={getImageSource(equipo.foto)} />
             ))}
           </View>
-            <View style={styles.addButton}>
-              <Button 
-                title="Añadir Equipo"
+              <TouchableOpacity  style={styles.addButton}
                 onPress={() => navigation.navigate('crearEquipo')}
-              />
-            </View>
+              >
+                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+              </TouchableOpacity>
             <View >
                 <Button style={styles.vermas}
                   color={'#FF002E'}
@@ -106,18 +106,16 @@ const HomeScreen = ({navigation}) => {
           </View>
           <View style={styles.contButtons}>
             <View style={styles.buttons}>
-              <View style={styles.addButton}>
-                <Button 
-                 title="Anotar"
-                  onPress={() => navigation.navigate('ConfigAnot')}
-                />
-              </View>
-              <View style={styles.addButton}>
-                <Button
-                  title="Crear"
-                  onPress={() => navigation.navigate('crearPartido')}
-                />
-            </View>
+              <TouchableOpacity  style={styles.addButton}
+                onPress={() => navigation.navigate('ConfigAnot')}
+              >
+                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity  style={styles.addButton}
+                onPress={() => navigation.navigate('crearPartido')}
+              >
+                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+              </TouchableOpacity>
           </View>
     </View>
           <View style={styles.vermas}>

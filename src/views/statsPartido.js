@@ -1,13 +1,16 @@
 import * as React from "react";
+import { useState } from "react";
 import Header from "../components/Header";
 import PlayerItem from "../components/Jugadores";
-import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions, FlatList } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 
 const { width: widthScreen } = Dimensions.get('window');
 const { height: heightScreen } = Dimensions.get('window');
 
 const App = ({ navigation }) => {
+    const [showAllPlayers, setShowAllPlayers] = useState(false);
+
     const players = [
         { id: '1', name: 'Juan Gutierrez', number: 1, value: 41, image: 'https://via.placeholder.com/50' },
         { id: '2', name: 'Dante Verdi', number: 2, value: 25, image: 'https://via.placeholder.com/50' },
@@ -45,16 +48,19 @@ const App = ({ navigation }) => {
         horizontalLabelRotation: 0, 
     };
 
+    const initialPlayerCount = 4;
+    const playersToShow = showAllPlayers ? players : players.slice(0, initialPlayerCount);
+
     return (
         <View style={styles.container}>
             <View style={styles.head}>
-            <Header />
-            <View style={styles.topBar}>
-                <Text style={styles.time}>20:00 mins {'\n'} Tiempos 2</Text>
-                <Text style={styles.period}>28 / 4</Text>
-                <Text style={styles.match}>Equipo 1 vs Sacachispas</Text>
-            </View>
-            <View style={styles.header2}>
+                <Header />
+                <View style={styles.topBar}>
+                    <Text style={styles.time}>20:00 mins {'\n'} Tiempos 2</Text>
+                    <Text style={styles.period}>28 / 4</Text>
+                    <Text style={styles.match}>Equipo 1 vs Sacachispas</Text>
+                </View>
+                <View style={styles.header2}>
                     <Image source={require('../images/barStats.png')} style={styles.bar} />
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View style={styles.flec}>
@@ -89,9 +95,21 @@ const App = ({ navigation }) => {
                 </View>
                 <View style={styles.playerListContainer}>
                     <Text style={styles.textitle}>Jugadores</Text>
-                        {players.map(player => (
-                        <PlayerItem key={player.id} player={player} />
-                    ))}
+                    <FlatList
+                        data={playersToShow}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <PlayerItem key={item.id} player={item} />}
+                        ListFooterComponent={
+                            !showAllPlayers && (
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => setShowAllPlayers(true)}
+                                >
+                                    <Text style={styles.buttonText}>Ver más jugadores</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                    />
                 </View>
             </ScrollView>
         </View>
@@ -183,7 +201,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-    }
+    },
+    button: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginVertical: 10,
+        marginHorizontal: 20,
+    },
+    buttonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+    },
 });
 
 export default App;

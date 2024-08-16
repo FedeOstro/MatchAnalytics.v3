@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { MAIN_BUTTON_COLOR } from '../../colors';
 
 const Equipo = ({ nombre, press, imageSource }) => {
   return (
@@ -9,6 +10,7 @@ const Equipo = ({ nombre, press, imageSource }) => {
       <Text style={styles.nombre}>{nombre}</Text>
       <View style={styles.buttonContainer}>
         <Button
+          color={MAIN_BUTTON_COLOR}
           title="Ver más"
           onPress={press}
         />

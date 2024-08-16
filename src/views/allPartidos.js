@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Header';
-import { View, Image, Dimensions, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
+import { View, Image, Dimensions, StyleSheet, ScrollView, Button, TouchableOpacity, Text } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
 import Partido from '../components/Partido';
 
@@ -30,11 +30,11 @@ const AllEquipo = ({ navigation }) => {
             </View>
           ))}
         </View>
-        <View style={styles.addButton}>
-              <Button 
-                title="Añadir Partido"
-              />
-            </View>
+        <TouchableOpacity  style={styles.addButton}
+          onPress={() => navigation.navigate('crearPartido')}
+        >
+          <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10
+    marginHorizontal: 10,
+    alignItems: 'center'
   },
 });
 

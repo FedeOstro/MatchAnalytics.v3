@@ -1,0 +1,2 @@
+export const MAIN_BUTTON_COLOR = "#2E98FA"
+export const SECONDARY_BUTTON_COLOR = "#000"

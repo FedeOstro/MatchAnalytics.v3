@@ -132,9 +132,9 @@ const CrearEquipo = ({ navigation }) => {
             {jugadores.map(player => (
               <PlayerItem key={player.id} player={player} />
             ))}
-            <TouchableOpacity onPress={() => {/* Funcionalidad para añadir nuevo jugador */}} style={styles.addPlayerButtonContainer}>
-              <Text style={styles.addPlayerButtonText}>Añadir Nuevo</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer2}>
+              <Button title="Aceptar" onPress={handleButtonPress} color="#007BFF" />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -143,6 +143,9 @@ const CrearEquipo = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  bar: {
+    width: screenWidth
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffcc66',
@@ -189,6 +192,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
+  buttonContainer2: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 10,
+    width: screenWidth * 0.9
+  },
   jugadoresTitle: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -210,6 +219,8 @@ const styles = StyleSheet.create({
   addPlayerButtonText: {
     color: '#fff',
     fontSize: 16,
+    width: screenWidth * 0.8,
+    alignItems: 'center'
   },
 });
 

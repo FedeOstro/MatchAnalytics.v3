@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, FlatList } from 'react-native';
 import PlayerItem from '../components/Jugadores';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
@@ -8,6 +8,9 @@ const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
 
 const TeamScreen = ({ navigation }) => {
+    const [showAllPartidos, setShowAllPartidos] = useState(false);
+    const [showAllPlayers, setShowAllPlayers] = useState(false);
+
     const players = [
         { id: '1', name: 'Juan Gutierrez', number: 1, value: 41, image: 'https://via.placeholder.com/50' },
         { id: '2', name: 'Dante Verdi', number: 2, value: 25, image: 'https://via.placeholder.com/50' },
@@ -17,8 +20,22 @@ const TeamScreen = ({ navigation }) => {
         { id: '6', name: 'Player 6', number: 6, value: 29, image: 'https://via.placeholder.com/50' },
     ];
 
+    const partidos = [
+        { numero: "1", fecha: "24/4", puntos: "34-12", equipos: "Equipo 3 vs As.Ingenieros" },
+        { numero: "2", fecha: "20/3", puntos: "3-1", equipos: "Equipo 1 vs Dep.Tortugas" },
+        { numero: "3", fecha: "12/2", puntos: "92-80", equipos: "Equipo 2 vs Dep.Puerrreydon" },
+        { numero: "4", fecha: "15/1", puntos: "70-65", equipos: "Equipo 4 vs Dep. Olavarría" },
+        { numero: "5", fecha: "05/12", puntos: "50-49", equipos: "Equipo 5 vs Racing Club" },
+    ];
+
+    const initialPartidosCount = 3;
+    const initialPlayerCount = 4;
+
+    const partidosToShow = showAllPartidos ? partidos : partidos.slice(0, initialPartidosCount);
+    const playersToShow = showAllPlayers ? players : players.slice(0, initialPlayerCount);
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Header />
             <TouchableOpacity onPress={() => navigation.goBack()}>
                 <View style={styles.flec}>
@@ -35,25 +52,50 @@ const TeamScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.scrollData}>
                     <Text style={styles.sectionTitle}>Partidos</Text>
-                    <ScrollView style={styles.partidosContainer}>
-                        <Partido numero="1" fecha="24/4" puntos="34-12" equipos="Equipo 3 vs As.Ingenieros" />
-                        <Partido numero="2" fecha="20/3" puntos="3-1" equipos="Equipo 1 vs Dep.Tortugas" />
-                        <Partido numero="3" fecha="12/2" puntos="92-80" equipos="Equipo 2 vs Dep.Puerrreydon" />
-                    </ScrollView>
+                    <FlatList
+                        data={partidosToShow}
+                        keyExtractor={(item) => item.numero}
+                        renderItem={({ item }) => (
+                            <Partido
+                                numero={item.numero}
+                                fecha={item.fecha}
+                                puntos={item.puntos}
+                                equipos={item.equipos}
+                            />
+                        )}
+                        ListFooterComponent={
+                            !showAllPartidos && (
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => setShowAllPartidos(true)}
+                                >
+                                    <Text style={styles.buttonText}>Ver más partidos</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                    />
                 </View>
+
                 <View style={styles.scrollData}>
                     <Text style={styles.sectionTitle}>Jugadores</Text>
-                    <ScrollView style={styles.playerListContainer}>
-                        {players.map(player => (
-                            <PlayerItem key={player.id} player={player} />
-                        ))}
-                        <TouchableOpacity style={styles.addButton}>
-                            <Text style={styles.addButtonText}>Añadir Nuevo</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
+                    <FlatList
+                        data={playersToShow}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <PlayerItem key={item.id} player={item} />}
+                        ListFooterComponent={
+                            !showAllPlayers && (
+                                <TouchableOpacity
+                                    style={styles.button}
+                                    onPress={() => setShowAllPlayers(true)}
+                                >
+                                    <Text style={styles.buttonText}>Ver más jugadores</Text>
+                                </TouchableOpacity>
+                            )
+                        }
+                    />
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -117,6 +159,28 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    button: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginVertical: 10,
+        marginHorizontal: 20,
+    },
+    buttonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+    },
+    teamItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    teamImage: {
+        width: 50,
+        height: 50,
+        marginRight: 10,
     },
 });
 

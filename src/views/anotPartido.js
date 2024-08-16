@@ -26,21 +26,29 @@ const GameScreen = ({route, navigation}) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Punto</Text>
             <TextInput
-              style={styles.input}
-              placeholder="Ingrese N° de jugador"
-              value={playerNumber}
-              onChangeText={setPlayerNumber}
-              keyboardType="numeric"
+                style={styles.input}
+                placeholder="Ingrese N° de jugador"
+                value={playerNumber}
+                onChangeText={setPlayerNumber}
+                keyboardType="numeric"
             />
             <View style={styles.modalButtons}>
-              <Button title="Simple" onPress={() => console.log('Punto Simple')} />
-              <Button title="Doble" onPress={() => console.log('Punto Doble')} />
+                <TouchableOpacity style={styles.simpleButton} onPress={() => console.log('Punto Simple')}>
+                    <Text style={styles.buttonText}>Simple</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.doubleButton} onPress={() => console.log('Punto Doble')}>
+                    <Text style={styles.buttonText}>Doble</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.modalActions}>
-              <Button title="Confirmar" onPress={closeModal} color="green" />
-              <Button title="Cancelar" onPress={closeModal} color="orange" />
+                <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
+                    <Text style={styles.confirmButtonText}>Confirmar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+                    <Text style={styles.cancelButtonText}>Cancelar</Text>
+                </TouchableOpacity>
             </View>
-          </View>
+        </View>
         );
       case 'Asistencia':
         return(
@@ -204,17 +212,90 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 10,
   },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+  modalContent: {
+    backgroundColor: '#ffcc00',
+    borderRadius: 5,
+    padding: 20,
+    alignItems: 'center',
+    width: '90%',
+    alignSelf: 'center',
+},
+modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 10,
-  },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+},
+input: {
+    height: 40,
+    borderColor: '#000',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
     width: '100%',
-  },
+    backgroundColor: '#fff',
+},
+modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 20,
+},
+simpleButton: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#000',
+    paddingVertical: 10,
+    marginRight: 5,
+    borderRadius: 5,
+},
+doubleButton: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#000',
+    paddingVertical: 10,
+    marginLeft: 5,
+    borderRadius: 5,
+},
+buttonText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#000',
+},
+modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+},
+confirmButton: {
+    flex: 1,
+    backgroundColor: '#8FC24E',
+    paddingVertical: 10,
+    marginRight: 5,
+    borderRadius: 20,
+},
+cancelButton: {
+    flex: 1,
+    backgroundColor: '#FF5733',
+    paddingVertical: 10,
+    marginLeft: 5,
+    borderRadius: 20,
+},
+confirmButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+},
+cancelButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+},
 });
 
 export default GameScreen;
