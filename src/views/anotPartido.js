@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
-import Header from '../components/Header'; 
+import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
+import Header from '../components/Header';
 
-const GameScreen = ({route, navigation}) => {
-  const  {partido, duracion, entretiempo, tiempos} = route.params
- 
+const GameScreen = ({ route, navigation }) => {
+  const { partido, duracion, entretiempo, tiempos } = route.params;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [playerNumber, setPlayerNumber] = useState('');
+  const [playerNumber2, setPlayerNumber2] = useState('');
+  const [selectedPoint, setSelectedPoint] = useState('');
 
   const openModal = (type) => {
     setModalType(type);
@@ -17,7 +19,13 @@ const GameScreen = ({route, navigation}) => {
   const closeModal = () => {
     setModalVisible(false);
     setPlayerNumber('');
+    setSelectedPoint(''); // Reset the selected point when modal closes
   };
+
+  const handlePointSelection = (pointType) => {
+    setSelectedPoint(pointType);
+  };
+
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -26,34 +34,84 @@ const GameScreen = ({route, navigation}) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Punto</Text>
             <TextInput
-                style={styles.input}
-                placeholder="Ingrese N° de jugador"
-                value={playerNumber}
-                onChangeText={setPlayerNumber}
-                keyboardType="numeric"
+              style={styles.input}
+              placeholder="Ingrese N° de jugador"
+              value={playerNumber}
+              onChangeText={setPlayerNumber}
+              keyboardType="numeric"
             />
             <View style={styles.modalButtons}>
-                <TouchableOpacity style={styles.simpleButton} onPress={() => console.log('Punto Simple')}>
-                    <Text style={styles.buttonText}>Simple</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.doubleButton} onPress={() => console.log('Punto Doble')}>
-                    <Text style={styles.buttonText}>Doble</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.simpleButton,
+                  selectedPoint === 'Simple' && styles.selectedButton
+                ]}
+                onPress={() => handlePointSelection('Simple')}
+              >
+                <Text style={styles.buttonText}>Simple</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.doubleButton,
+                  selectedPoint === 'Doble' && styles.selectedButton
+                ]}
+                onPress={() => handlePointSelection('Doble')}
+              >
+                <Text style={styles.buttonText}>Doble</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.confirmButton} onPress={closeModal}>
-                    <Text style={styles.confirmButtonText}>Confirmar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
-                    <Text style={styles.cancelButtonText}>Cancelar</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  selectedPoint ? styles.activeConfirmButton : {}
+                ]}
+                onPress={closeModal}
+                disabled={!selectedPoint} // Disable button if no point is selected
+              >
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
             </View>
-        </View>
+          </View>
         );
       case 'Asistencia':
-        return(
+        return (
           <View style={styles.modalContent}>
-
+            <Text style={styles.modalTitle}>Punto</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese N° de jugador asistente"
+              value={playerNumber}
+              onChangeText={setPlayerNumber}
+              keyboardType="numeric"
+              selectedPlayer = {playerNumber}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese N° de jugador asistido"
+              value={playerNumber2}
+              onChangeText={setPlayerNumber2}
+              keyboardType="numeric"
+              selectedPlayer2 = {playerNumber2}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  playerNumber2 & playerNumber ? styles.activeConfirmButton : {}
+                ]}
+                onPress={closeModal}
+                disabled={!(playerNumber && playerNumber2)}
+              >
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         );
       default:
@@ -65,14 +123,29 @@ const GameScreen = ({route, navigation}) => {
     <View style={styles.container}>
       <View style={styles.topBar}>
         <Text style={styles.time}>{duracion + ' mins'}</Text>
-        <Text style={styles.period}>{'1/'+tiempos}</Text>
-        <Text style={styles.match}>{partido.equipo1 + ' vs ' + partido.equipo2}</Text>
+        <Text style={styles.period}>{'1/' + tiempos}</Text>
+        <Text style={styles.match}>
+          {partido.equipo1 + ' vs ' + partido.equipo2}
+        </Text>
       </View>
       <Header />
       <View style={styles.contentContainer}>
         <View style={styles.buttonsContainer}>
-          {['Punto', 'Asistencia', 'Bloqueo', 'Robo', 'Falta', 'Perdida', 'Rebote/Of', 'Rebote/Def'].map((type) => (
-            <TouchableOpacity key={type} style={styles.button} onPress={() => openModal(type)}>
+          {[
+            'Punto',
+            'Asistencia',
+            'Bloqueo',
+            'Robo',
+            'Falta',
+            'Perdida',
+            'Rebote/Of',
+            'Rebote/Def'
+          ].map((type) => (
+            <TouchableOpacity
+              key={type}
+              style={styles.button}
+              onPress={() => openModal(type)}
+            >
               <Text style={styles.buttonText}>{type}</Text>
             </TouchableOpacity>
           ))}
@@ -93,9 +166,7 @@ const GameScreen = ({route, navigation}) => {
         visible={modalVisible}
         onRequestClose={closeModal}
       >
-        <View style={styles.modalContainer}>
-          {renderModalContent()}
-        </View>
+        <View style={styles.modalContainer}>{renderModalContent()}</View>
       </Modal>
     </View>
   );
@@ -139,11 +210,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
     marginTop: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   contentContainer: {
     flex: 1,
-    marginTop: 60, 
+    marginTop: 60,
     zIndex: 1,
   },
   buttonsContainer: {
@@ -194,39 +265,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    backgroundColor: '#FFF',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#CCC',
-    padding: 5,
-    borderRadius: 5,
-    width: '80%',
-    marginBottom: 10,
-  },
-  modalContent: {
     backgroundColor: '#ffcc00',
     borderRadius: 5,
     padding: 20,
     alignItems: 'center',
     width: '90%',
     alignSelf: 'center',
-},
-modalTitle: {
+  },
+  modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
-},
-input: {
+  },
+  input: {
     height: 40,
     borderColor: '#000',
     borderWidth: 1,
@@ -235,14 +287,14 @@ input: {
     marginBottom: 20,
     width: '100%',
     backgroundColor: '#fff',
-},
-modalButtons: {
+  },
+  modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 20,
-},
-simpleButton: {
+  },
+  simpleButton: {
     flex: 1,
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -250,8 +302,8 @@ simpleButton: {
     paddingVertical: 10,
     marginRight: 5,
     borderRadius: 5,
-},
-doubleButton: {
+  },
+  doubleButton: {
     flex: 1,
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -259,43 +311,49 @@ doubleButton: {
     paddingVertical: 10,
     marginLeft: 5,
     borderRadius: 5,
-},
-buttonText: {
+  },
+  selectedButton: {
+    backgroundColor: '#ADD8E6',
+  },
+  buttonText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#000',
-},
-modalActions: {
+  },
+  modalActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-},
-confirmButton: {
+  },
+  confirmButton: {
     flex: 1,
-    backgroundColor: '#8FC24E',
+    backgroundColor: '#CCCCCC',
     paddingVertical: 10,
     marginRight: 5,
     borderRadius: 20,
-},
-cancelButton: {
+  },
+  activeConfirmButton: {
+    backgroundColor: '#8FC24E',
+  },
+  cancelButton: {
     flex: 1,
     backgroundColor: '#FF5733',
     paddingVertical: 10,
     marginLeft: 5,
     borderRadius: 20,
-},
-confirmButtonText: {
+  },
+  confirmButtonText: {
     textAlign: 'center',
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
-},
-cancelButtonText: {
+  },
+  cancelButtonText: {
     textAlign: 'center',
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
-},
+  },
 });
 
 export default GameScreen;
