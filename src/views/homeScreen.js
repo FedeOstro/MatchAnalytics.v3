@@ -11,6 +11,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const HomeScreen = ({navigation}) => {
   const [equipos, setEquipos] = useState([]);
+  const [partido, setPartidos] = useState([])
   const transparentColor = 'rgba(255, 0, 0, 0)'
 
   const fillImage = (data) => {
@@ -42,6 +43,42 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
+  const fillteams = (data) => {
+    try {
+      const updatedPartidos = data.map(partido => {
+        if (partido.foto === null) {
+          switch (partido.id_deporte) {
+            case 1:
+              partido.foto = '../images/football.png';
+              break;
+            case 2:
+              partido.foto = '../images/cesto.png';
+              break;
+            case 3:
+              partido.foto = '../images/basque.png';
+              break;
+            default:
+              console.log("Error setup foto");
+              break;
+          }
+        } else {
+          console.log("Foto puesta");
+        }
+        equipos.forEach((equipo) =>
+            {if(equipo.id_equipo = partido.idequipo1){
+              partido.name = equipo.nombre
+            }else if(equipo.id_equipo = partido.idequipo2){
+              partido.name = partido.name + 'vs' + equipo.nombre
+            }}
+        )
+        return partido; 
+      });
+      setPartidos(updatedPartidos); 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const getImageSource = (foto) => {
     switch (foto) {
       case '../images/football.png':
@@ -61,10 +98,19 @@ const HomeScreen = ({navigation}) => {
       if (error) {
         console.log(error);
       } else {
-        fillImage(data);
+        fillImage(data); 
       }
-    };
+    }
+    const fetchPost2 = async () => {
+      const { data, error } = await supabase.from('partido').select('*')
+      if(error) {
+        console.log(error)
+      } else {
+        fillteams(data)
+      }
+    } 
     fetchPost();
+    fetchPost2();
   }, []);
   
   return (
@@ -100,9 +146,9 @@ const HomeScreen = ({navigation}) => {
               <Image source={require('../images/BarraPartidosbarPartido.png')} style={styles.barEquip}/>
             </View>
           <View style={styles.partidosContainer}>
-            <Partido numero="1" fecha="24/4" puntos="34-12" equipos="Equipo 3 vs As.Ingenieros" />
-            <Partido numero="2" fecha="20/3" puntos="3-1" equipos="Equipo 1 vs Dep.Tortugas" />
-            <Partido numero="3" fecha="12/2" puntos="92-80" equipos="Equipo 2 vs Dep.Puerrreydon" />
+            {partido.slice(0,3).map(equipo =>(
+              <Partido numero={'Partido' + partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} />
+            ))}
           </View>
           <View style={styles.contButtons}>
             <View style={styles.buttons}>

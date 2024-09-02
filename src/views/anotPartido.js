@@ -19,13 +19,13 @@ const GameScreen = ({ route, navigation }) => {
   const closeModal = () => {
     setModalVisible(false);
     setPlayerNumber('');
+    setPlayerNumber2('');
     setSelectedPoint(''); // Reset the selected point when modal closes
   };
 
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
   };
-
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -80,14 +80,13 @@ const GameScreen = ({ route, navigation }) => {
       case 'Asistencia':
         return (
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Punto</Text>
+            <Text style={styles.modalTitle}>Asistencia</Text>
             <TextInput
               style={styles.input}
               placeholder="Ingrese N° de jugador asistente"
               value={playerNumber}
               onChangeText={setPlayerNumber}
               keyboardType="numeric"
-              selectedPlayer = {playerNumber}
             />
             <TextInput
               style={styles.input}
@@ -95,16 +94,48 @@ const GameScreen = ({ route, navigation }) => {
               value={playerNumber2}
               onChangeText={setPlayerNumber2}
               keyboardType="numeric"
-              selectedPlayer2 = {playerNumber2}
             />
             <View style={styles.modalActions}>
               <TouchableOpacity
                 style={[
                   styles.confirmButton,
-                  playerNumber2 & playerNumber ? styles.activeConfirmButton : {}
+                  playerNumber && playerNumber2 ? styles.activeConfirmButton : {}
                 ]}
                 onPress={closeModal}
-                disabled={!(playerNumber && playerNumber2)}
+                disabled={!(playerNumber && playerNumber2)} // Disable button if both player numbers are not entered
+              >
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      case 'Bloqueo':
+      case 'Robo':
+      case 'Falta':
+      case 'Perdida':
+      case 'Rebote/Of':
+      case 'Rebote/Def':
+        return (
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{modalType}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ingrese N° de jugador"
+              value={playerNumber}
+              onChangeText={setPlayerNumber}
+              keyboardType="numeric"
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[
+                  styles.confirmButton,
+                  playerNumber ? styles.activeConfirmButton : {}
+                ]}
+                onPress={closeModal}
+                disabled={!playerNumber} // Disable button if player number is not entered
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
