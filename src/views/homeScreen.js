@@ -43,9 +43,9 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  const fillteams = (data) => {
+  const fillteams = async (data) => {
     try {
-      const updatedPartidos = data.map(partido => {
+      const updatedPartidos = data.map(async partido => {
         if (partido.foto === null) {
           switch (partido.id_deporte) {
             case 1:
@@ -64,13 +64,21 @@ const HomeScreen = ({navigation}) => {
         } else {
           console.log("Foto puesta");
         }
+        if(partido.name = null){
         equipos.forEach((equipo) =>
             {if(equipo.id_equipo = partido.idequipo1){
               partido.name = equipo.nombre
-            }else if(equipo.id_equipo = partido.idequipo2){
-              partido.name = partido.name + 'vs' + equipo.nombre
+              {if(equipo.id_equipo = partido.idequipo2){
+                partido.name = partido.name + ' vs ' + equipo.nombre
+              }}
+            }else{
+              console.log("Clarence")
             }}
         )
+        }
+        if(partido.foto = null){
+          let { data: eqdata, error } = await supabase.from('equipo').select('id_deporte').eq('id_equipo', partido.idequipo1)
+        }
         return partido; 
       });
       setPartidos(updatedPartidos); 
@@ -94,19 +102,20 @@ const HomeScreen = ({navigation}) => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      const { data, error } = await supabase.from('equipo').select('*');
+      const { data: equiposData, error } = await supabase.from('equipo').select('*');
       if (error) {
         console.log(error);
       } else {
-        fillImage(data); 
+        fillImage(equiposData); 
       }
     }
+  
     const fetchPost2 = async () => {
-      const { data, error } = await supabase.from('partido').select('*')
-      if(error) {
-        console.log(error)
+      const { data: partidosData, error } = await supabase.from('partido').select('*');
+      if (error) {
+        console.log(error); 
       } else {
-        fillteams(data)
+        fillteams(partidosData); 
       }
     } 
     fetchPost();
