@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase'
+import { fetchAllEquipos } from '../../lib/fetchteams'
+import { fetch3partidos } from '../../lib/fetchmatch'
 import Equipo from '../components/Equipo';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
@@ -45,7 +47,7 @@ const HomeScreen = ({navigation}) => {
 
   const fillteams = async (data) => {
     try {
-      const updatedPartidos = data.map(async partido => {
+      const updatedPartidos = await Promise.all(data.map(async partido => {
         if (partido.foto === null) {
           switch (partido.id_deporte) {
             case 1:
@@ -64,28 +66,27 @@ const HomeScreen = ({navigation}) => {
         } else {
           console.log("Foto puesta");
         }
-        if(partido.name = null){
-        equipos.forEach((equipo) =>
-            {if(equipo.id_equipo = partido.idequipo1){
-              partido.name = equipo.nombre
-              {if(equipo.id_equipo = partido.idequipo2){
-                partido.name = partido.name + ' vs ' + equipo.nombre
-              }}
-            }else{
-              console.log("Clarence")
-            }}
-        )
+  
+        if (partido.name == null) {
+          equipos.forEach(equipo => {            
+            if (partido.idequipo1 = equipo.id_equipo) {
+              partido.name = equipo.nombre;
+              if (partido.idequipo2 = equipo.id_equipo) {
+                partido.name = partido.name + ' vs ' + equipo.nombre;
+              }
+            } else {
+              console.log("Clarence");
+            }
+          });
         }
-        if(partido.foto = null){
-          let { data: eqdata, error } = await supabase.from('equipo').select('id_deporte').eq('id_equipo', partido.idequipo1)
-        }
-        return partido; 
-      });
-      setPartidos(updatedPartidos); 
+        return partido;
+      }));
+      setPartidos(updatedPartidos);
     } catch (error) {
       console.log(error);
     }
   }
+  
 
   const getImageSource = (foto) => {
     switch (foto) {
@@ -101,25 +102,17 @@ const HomeScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    const fetchPost = async () => {
-      const { data: equiposData, error } = await supabase.from('equipo').select('*');
-      if (error) {
-        console.log(error);
-      } else {
-        fillImage(equiposData); 
+    const fetchData = async () => {
+      try{
+        const data = await fetchAllEquipos()
+        fillImage(data)
+        const data2 = await fetch3partidos()
+        fillteams(data2)
+      }catch(error){
+        console.log(error)
       }
     }
-  
-    const fetchPost2 = async () => {
-      const { data: partidosData, error } = await supabase.from('partido').select('*');
-      if (error) {
-        console.log(error); 
-      } else {
-        fillteams(partidosData); 
-      }
-    } 
-    fetchPost();
-    fetchPost2();
+    fetchData()
   }, []);
   
   return (
@@ -155,7 +148,7 @@ const HomeScreen = ({navigation}) => {
               <Image source={require('../images/BarraPartidosbarPartido.png')} style={styles.barEquip}/>
             </View>
           <View style={styles.partidosContainer}>
-            {partido.slice(0,3).map(equipo =>(
+            {partido.slice(0,3).map(partido =>(
               <Partido numero={'Partido' + partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} />
             ))}
           </View>
