@@ -66,19 +66,6 @@ const HomeScreen = ({navigation}) => {
         } else {
           console.log("Foto puesta");
         }
-  
-        if (partido.name == null) {
-          equipos.forEach(equipo => {            
-            if (partido.idequipo1 = equipo.id_equipo) {
-              partido.name = equipo.nombre;
-              if (partido.idequipo2 = equipo.id_equipo) {
-                partido.name = partido.name + ' vs ' + equipo.nombre;
-              }
-            } else {
-              console.log("Clarence");
-            }
-          });
-        }
         return partido;
       }));
       setPartidos(updatedPartidos);
@@ -149,7 +136,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           <View style={styles.partidosContainer}>
             {partido.slice(0,3).map(partido =>(
-              <Partido numero={'Partido' + partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} />
+              <Partido numero={partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} />
             ))}
           </View>
           <View style={styles.contButtons}>
