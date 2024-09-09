@@ -149,12 +149,12 @@ const HomeScreen = ({navigation}) => {
               <TouchableOpacity  style={styles.addButton}
                 onPress={() => navigation.navigate('ConfigAnot')}
               >
-                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Anotar partido</Text>
               </TouchableOpacity>
               <TouchableOpacity  style={styles.addButton}
                 onPress={() => navigation.navigate('crearPartido')}
               >
-                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+                <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Partido</Text>
               </TouchableOpacity>
           </View>
     </View>

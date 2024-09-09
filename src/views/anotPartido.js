@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
 import Header from '../components/Header';
+import { updateMatch } from '../../lib/fetchmatch'
 
 const GameScreen = ({ route, navigation }) => {
   const { partido, duracion, entretiempo, tiempos } = route.params;
-
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [playerNumber, setPlayerNumber] = useState('');
@@ -26,6 +26,14 @@ const GameScreen = ({ route, navigation }) => {
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
   };
+
+  useEffect(() =>{
+    try{
+
+    }catch(error){
+      console.log(error)
+    }
+  })
 
   const renderModalContent = () => {
     switch (modalType) {

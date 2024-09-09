@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert, Image, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../components/Header';
+import {fetchAllpartidos} from '../../lib/fetchmatch'
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -10,12 +11,19 @@ const ConfigAnot = ({ navigation }) => {
   const [duracion, setDuracion] = useState('');
   const [entretiempo, setEntretiempo] = useState('');
   const [tiempos, setTiempos] = useState('');
+  const [Partidos, setPartidos] = useState([])
 
-  const Partidos = [
-    { equipo1: 'equipo 1', equipo2: 'equipo 2' },
-    { equipo1: 'equipo 3', equipo2: 'equipo 4' },
-    { equipo1: 'equipo 5', equipo2: 'equipo 6' },
-  ];
+  useEffect(() =>{
+    const fetchData = async () => {
+      try{
+        const data = await fetchAllpartidos()
+        setPartidos(data)
+      }catch(error){
+        console.log(error)
+      }
+    }
+    fetchData()
+  })
 
   const handleButtonPress = () => {
     if (selectedPartidoIndex !== undefined && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
@@ -31,6 +39,7 @@ const ConfigAnot = ({ navigation }) => {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar. Asegúrate de que ningún campo tenga un valor menor a 0.');
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -53,8 +62,8 @@ const ConfigAnot = ({ navigation }) => {
               {Partidos.map((partido, index) => (
                 <Picker.Item 
                   key={index+1} 
-                  label={`Partido ${index + 1}`} 
-                  value={index+1}
+                  label={partido.name} 
+                  value={partido.id_partido}
                 />
               ))}
             </Picker>

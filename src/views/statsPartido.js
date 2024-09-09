@@ -1,24 +1,42 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import PlayerItem from "../components/Jugadores";
 import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions, FlatList } from "react-native";
 import { BarChart } from "react-native-chart-kit";
+import { getAllPlayers } from '../../lib/fetchplayers'
 
 const { width: widthScreen } = Dimensions.get('window');
 const { height: heightScreen } = Dimensions.get('window');
 
 const App = ({ route, navigation }) => {
     const [showAllPlayers, setShowAllPlayers] = useState(false);
-    const { idequipo1, idequipo2, id_partido } = route.params
-    const players = [
-        { id: '1', name: 'Juan Gutierrez', number: 1, value: 41, image: 'https://via.placeholder.com/50' },
-        { id: '2', name: 'Dante Verdi', number: 2, value: 25, image: 'https://via.placeholder.com/50' },
-        { id: '3', name: 'Julian Huewman', number: 3, value: 30, image: 'https://via.placeholder.com/50' },
-        { id: '4', name: 'Player 4', number: 4, value: 28, image: 'https://via.placeholder.com/50' },
-        { id: '5', name: 'Player 5', number: 5, value: 33, image: 'https://via.placeholder.com/50' },
-        { id: '6', name: 'Player 6', number: 6, value: 29, image: 'https://via.placeholder.com/50' },
-    ];
+    const [players, setJugadores] = useState([])
+    const { idequipo1, idequipo2, id_partido } = route.params 
+     
+    const fillImage = (players) => {
+        players.forEach(player => {
+            if(player.foto == null){
+                player.foto = '../images/perfilDefault.png'
+            }
+        });
+        console.log(players)
+        return players
+    }
+
+    useEffect(() =>{
+        const fetchData = async () => {
+            try{
+                const jugadores = await getAllPlayers(idequipo1)
+                console.log("Papa")
+                const plays = fillImage(jugadores)
+                setJugadores(plays)
+            }catch(error){
+                console.log(error)
+            }
+        }
+        fetchData()
+    })
 
     const stats = [
         { labels: ["Jan", "Feb"], datasets: [{ data: [20, 15] }] },

@@ -16,4 +16,8 @@ export const fetchAllpartidos = async () => {
   }else{
     return data
   }
+} 
+
+export const updateMatch = async (id_partido, duration, pEqLocal, pEqOf) => {
+  await supabase.from('partidos').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
 }
