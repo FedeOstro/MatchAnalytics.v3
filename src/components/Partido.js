@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const Partido = ({ numero, fecha, puntos, equipos }) => {
+const Partido = ({ numero, fecha, puntos, equipos, idequipo1, idequipo2, id_partido }) => {
   const navigation = useNavigation(); 
 
   return (
@@ -19,7 +19,11 @@ const Partido = ({ numero, fecha, puntos, equipos }) => {
         <Text style={styles.equiposText}>{equipos}</Text>
       </View>
       <View>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('statsPartido')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('statsPartido', {
+          idequipo1: idequipo1,
+          idequipo2: idequipo2,
+          id_partido: id_partido
+        })}>
           <Image source={require('../images/flechaderecha.png')} style={styles.image} />
         </TouchableOpacity> 
       </View>

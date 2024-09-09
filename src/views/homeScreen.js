@@ -141,7 +141,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           <View style={styles.partidosContainer}>
             {partido.slice(0,3).map(partido =>(
-              <Partido numero={partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} />
+              <Partido numero={partido.id_partido} fecha={partido.fecha} puntos={partido.puntosEqLocal + '/' + partido.puntosEqOf} equipos={partido.name} idequipo1={partido.idequipo1} idequipo2={partido.idequipo2} id_partido={partido.id_partido}/>
             ))}
           </View>
           <View style={styles.contButtons}>

@@ -8,9 +8,9 @@ import { BarChart } from "react-native-chart-kit";
 const { width: widthScreen } = Dimensions.get('window');
 const { height: heightScreen } = Dimensions.get('window');
 
-const App = ({ navigation }) => {
+const App = ({ route, navigation }) => {
     const [showAllPlayers, setShowAllPlayers] = useState(false);
-
+    const { idequipo1, idequipo2, id_partido } = route.params
     const players = [
         { id: '1', name: 'Juan Gutierrez', number: 1, value: 41, image: 'https://via.placeholder.com/50' },
         { id: '2', name: 'Dante Verdi', number: 2, value: 25, image: 'https://via.placeholder.com/50' },
