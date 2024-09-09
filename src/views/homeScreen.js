@@ -116,7 +116,12 @@ const HomeScreen = ({navigation}) => {
           </View>
           <View style={styles.equiposContainer}>
             {equipos.slice(0,3).map(equipo =>(
-              <Equipo nombre={equipo.nombre} press={() => navigation.navigate('verEquipo')} deporte={equipo.deporte} imageSource={getImageSource(equipo.foto)} />
+              <Equipo 
+              nombre={equipo.nombre} 
+              press={() => navigation.navigate('verEquipo', { idEquipo: equipo.id_equipo })} 
+              deporte={equipo.deporte} 
+              imageSource={getImageSource(equipo.foto)} 
+            />
             ))}
           </View>
               <TouchableOpacity  style={styles.addButton}

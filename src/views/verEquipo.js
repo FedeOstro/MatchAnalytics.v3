@@ -9,20 +9,32 @@ import { getAllPlayers } from '../../lib/fetchplayers'
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
 
-const TeamScreen = ({ navigation }) => {
+const TeamScreen = ({ route, navigation }) => {
+    const { idEquipo } = route.params || {};
+    console.log(idEquipo);
     const [partidos, setPartidos] = useState([])
     const [players, setPlayers] = useState([])
     const [showAllPartidos, setShowAllPartidos] = useState(false);
     const [showAllPlayers, setShowAllPlayers] = useState(false);
+
+    const fillImage = (players) => {
+        players.forEach(player => {
+            if(player.foto == null){
+                player.foto = '../images/perfilDefault.png'
+            }
+        });
+        console.log(players)
+        return players
+    }
 
     useEffect(() => {
         const fetchData = async () => {
           try{
             const data2 = await fetchAllpartidos()
             setPartidos(data2)
-            const play = await getAllPlayers(2)
-            console.log(play)
-            setPlayers(play)
+            const play = await getAllPlayers(idEquipo)
+            const players = fillImage(play)
+            setPlayers(players)
           }catch(error){
             console.log(error)
           }
@@ -59,7 +71,7 @@ const TeamScreen = ({ navigation }) => {
                         keyExtractor={(item) => item.numero}
                         renderItem={({ item }) => (
                             <Partido
-                                numero={item.id_deporte}
+                                numero={item.id_partido}
                                 fecha={item.fecha}
                                 puntos={item.puntosEqLocal + '/' + item.puntosEqOf}
                                 equipos={item.name}

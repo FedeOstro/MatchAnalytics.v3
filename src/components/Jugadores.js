@@ -2,14 +2,24 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
 
+
+const getImageSource = (foto) => {
+  switch (foto) {
+    case '../images/perfilDefault.png':
+      return require('../images/perfilDefault.png');
+    default:
+      return require('../images/perfilDefault.png');
+    }
+};
+
 const PlayerItem = ({ player }) => {
   return (
     <TouchableOpacity style={styles.container}>
-      <Image source={{ uri: player.image }} style={styles.image} />
+      <Image source={getImageSource(player.foto)} style={styles.image} />
       <View style={styles.info}>
-        <Text style={styles.name}>{player.name}</Text>
-        <Text style={styles.number}>Número: {player.number}</Text>
-        <Text style={styles.value}>Val: {player.value}</Text>
+        <Text style={styles.name}>{player.nombre}</Text>
+        <Text style={styles.number}>Número: {player.numero}</Text>
+        <Text style={styles.value}>Val: {player.rol}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -31,9 +41,10 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.90
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 70,
+    height: 70,
     borderRadius: 25,
+    marginTop: 5
   },
   info: {
     marginLeft: 10,

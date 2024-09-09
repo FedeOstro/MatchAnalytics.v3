@@ -1,15 +1,54 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Header from '../components/Header';
 import { View, Image, Dimensions, StyleSheet, ScrollView, Button, TouchableOpacity, Text } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
 import Partido from '../components/Partido';
-
+import { fetchAllpartidos } from '../../lib/fetchmatch'
 const AllEquipo = ({ navigation }) => {
-  const partidos = [
-    { numero:"1", fecha:"24/4", puntos:"34-12", equipos:"Equipo 3 vs As.Ingenieros" },
-    { numero:"2", fecha:"20/3", puntos:"3-1", equipos:"Equipo 1 vs Dep.Tortugas" },
-    { numero:"3", fecha:"12/2", puntos:"92-80", equipos:"Equipo 2 vs Dep.Puerrreydon" },
-  ];
+  const [partidos, setPartidos] = useState([])
+
+  const fillteams = async (data) => {
+    try {
+      const updatedPartidos = await Promise.all(data.map(async partido => {
+        if (partido.foto === null) {
+          switch (partido.id_deporte) {
+            case 1:
+              partido.foto = '../images/football.png';
+              break;
+            case 2:
+              partido.foto = '../images/cesto.png';
+              break;
+            case 3:
+              partido.foto = '../images/basque.png';
+              break;
+            default:
+              console.log("Error setup foto");
+              break;
+          }
+        } else {
+          console.log("Foto puesta");
+        }
+        return partido;
+      }));
+      setPartidos(updatedPartidos);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() =>{
+    const fetchData = async () => {
+      try{
+        const data = await fetchAllpartidos()
+        fillteams(data)
+      }catch(error){
+        console.log(error)
+      }
+    }
+    fetchData()
+  })
+
+
 
   return (
     <View style={styles.container}>
@@ -26,14 +65,14 @@ const AllEquipo = ({ navigation }) => {
         <View style={styles.equiposContainer}>
           {partidos.map((partidos, index) => (
             <View key={index} style={styles.equipoWrapper}>
-              <Partido numero={partidos.nombre} fecha={partidos.fecha} puntos={partidos.puntos} equipos={partidos.equipos} />
+              <Partido numero={partidos.id_partido} fecha={partidos.fecha} puntos={partidos.puntosEqLocal + '/' + partidos.puntosEqOf} equipos={partidos.name} />
             </View>
           ))}
         </View>
         <TouchableOpacity  style={styles.addButton}
           onPress={() => navigation.navigate('crearPartido')}
         >
-          <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Equipo</Text>
+          <Text style={{color:'#FFFFFF', fontWeight: 'bold'}}>Añadir Partido</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
