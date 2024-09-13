@@ -18,6 +18,15 @@ export const fetchAllpartidos = async () => {
   }
 } 
 
+export const fetchPartidoById = async (id: Int8Array) => {
+  const {data, error } = await supabase.from('partido').select('*').eq('id_partido', id)
+  if(error){
+    console.log(error)
+  }else{
+    return data
+  }
+}
+
 export const updateMatch = async (id_partido, duration, pEqLocal, pEqOf) => {
   await supabase.from('partidos').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
 }

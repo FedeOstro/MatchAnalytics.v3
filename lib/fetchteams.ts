@@ -8,3 +8,12 @@ export const fetchAllEquipos = async () => {
       return equiposData
     }
 }
+
+export const fetchEquipoById = async (id: Int8Array) => {
+  const {data, error} = await supabase.from('equipo').select('*').eq('id_equipo', id)
+  if(error){
+    console.log(error)
+  }else{
+    return data
+  }
+}

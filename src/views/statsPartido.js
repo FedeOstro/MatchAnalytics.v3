@@ -5,6 +5,8 @@ import PlayerItem from "../components/Jugadores";
 import { View, StyleSheet, Text, TouchableOpacity, Image, ScrollView, Dimensions, FlatList } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { getAllPlayers } from '../../lib/fetchplayers'
+import { fetchPartidoById } from '../../lib/fetchmatch'
+import { fetchEquipoById } from '../../lib/fetchteams'
 
 const { width: widthScreen } = Dimensions.get('window');
 const { height: heightScreen } = Dimensions.get('window');
@@ -12,25 +14,44 @@ const { height: heightScreen } = Dimensions.get('window');
 const App = ({ route, navigation }) => {
     const [showAllPlayers, setShowAllPlayers] = useState(false);
     const [players, setJugadores] = useState([])
+    const [match, setPartido] = useState([])
+    const [equipo1, setEquipo1] = useState([])
+    const [equipo2, setEquipo2] = useState([])
     const { idequipo1, idequipo2, id_partido } = route.params 
-     
     const fillImage = (players) => {
         players.forEach(player => {
             if(player.foto == null){
                 player.foto = '../images/perfilDefault.png'
             }
         });
-        console.log(players)
         return players
     }
+
+    const getImageSource = (foto) => {
+        switch (foto) {
+          case '../images/football.png':
+            return require('../images/football.png');
+          case '../images/cesto.png':
+            return require('../images/cesto.png');
+          case '../images/basque.png':
+            return require('../images/basque.png');
+          default:
+            return require('../images/log.png');
+        }
+    };
 
     useEffect(() =>{
         const fetchData = async () => {
             try{
                 const jugadores = await getAllPlayers(idequipo1)
-                console.log("Papa")
                 const plays = fillImage(jugadores)
                 setJugadores(plays)
+                const partido = await fetchPartidoById(id_partido)
+                setPartido(partido)
+                const equipo1 = await fetchEquipoById(idequipo1)
+                setEquipo1(equipo1)
+                const equipo2 = await fetchEquipoById(idequipo2)
+                setEquipo1(equipo2)
             }catch(error){
                 console.log(error)
             }
@@ -47,7 +68,7 @@ const App = ({ route, navigation }) => {
 
     const chartConfig = {
         backgroundGradientFrom: "#ffffff00", // Fondo transparente
-        backgroundGradientTo: "#ffffff00",   // Fondo transparente
+        backgroundGradientTo: "#ffffff00",   
         color: () => `rgba(234, 181, 25, 1)`,
         strokeWidth: 2,
         barPercentage: 0.4,
@@ -90,9 +111,9 @@ const App = ({ route, navigation }) => {
             <ScrollView style={styles.scrollView}>
                 <View style={styles.stats}>
                     <View style={styles.cuadros}>
-                        <Image source={require('../images/log.png')} style={styles.log} />
+                        <Image source={getImageSource(equipo1.foto)} style={styles.log} />
                         <Text style={styles.vs}>VS</Text>
-                        <Image source={require('../images/log.png')} style={styles.log} />
+                        <Image source={getImageSource(equipo2.foto)} style={styles.log} />
                     </View>
                     <View style={styles.chartContainer}>
                         {stats.map((stat, index) => (

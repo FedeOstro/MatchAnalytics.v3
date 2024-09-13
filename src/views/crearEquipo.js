@@ -16,11 +16,7 @@ const CrearEquipo = ({ navigation }) => {
   const [imagen, setImagen] = useState(null);
   const [imagenNombre, setImagenNombre] = useState('');
   const [listDep, setlistDep] = useState([])
-  const [jugadores, setJugadores] = useState([
-    { id: '1', name: 'Juan Gutierrez', number: 1, rol: 2, image: 'https://via.placeholder.com/50' },
-    { id: '2', name: 'Dante Verdi', number: 2, rol: 4, image: 'https://via.placeholder.com/50' },
-    { id: '3', name: 'Julian Huewman', number: 3, rol: 5, image: 'https://via.placeholder.com/50' },
-  ]);
+  const [jugadores, setJugadores] = useState([]);
 
   useEffect(() => {
     (async () => {
