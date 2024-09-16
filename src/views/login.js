@@ -1,7 +1,7 @@
+import * as react from 'react'
 
-
-function App ({navigation}) {
-
+function login ({navigation}) {
+    
 }
 
-export default App
+export default login

@@ -27,19 +27,16 @@ export const fetchPartidoById = async (id: Int8Array) => {
   }
 }
 
-export const updateMatch = async (id_partido, duration, pEqLocal, pEqOf) => {
+export const updateMatch = async (id_partido: Int8Array, duration: Int8Array, pEqLocal: Int8Array, pEqOf: Int8Array) => {
   await supabase.from('partido').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
 }
 
-export const insertMatch = async (partido) => {
+export const insertMatch = async (equipo, oponente, fecha, name, deporte) => {
   await supabase.from('partido').insert({
-    fecha: '',
-    ubacacion: ' ',
-    duracion: '',
-    idequipo1: '',
-    idequipo2: '',
-    name: '',
-    id_deporte: '',
-    foto: '',
+    fecha: fecha,
+    idequipo1: equipo,
+    idequipo2: oponente,
+    name: name,
+    id_deporte: deporte,
   })
 }

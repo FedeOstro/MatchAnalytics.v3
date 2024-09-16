@@ -4,7 +4,9 @@ import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Header from '../components/Header';
-
+import { insertMatch } from '../../lib/fetchmatch';
+import { eq } from 'drizzle-orm';
+import { fetchAllEquipos } from '../../lib/fetchteams';
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigPartido = ({ navigation }) => {
@@ -15,6 +17,7 @@ const ConfigPartido = ({ navigation }) => {
   const [dia, setDia] = useState('');
   const [mes, setMes] = useState('');
   const [ano, setAno] = useState('');
+  const [equipos, setEquipos] = useState([])
 
   useEffect(() => {
     (async () => {
@@ -24,6 +27,8 @@ const ConfigPartido = ({ navigation }) => {
           alert('Se necesita permiso para acceder a las fotos.');
         }
       }
+      const equip = await fetchAllpartidos()
+      setEquipos(equip)
     })();
   }, []);
 
@@ -77,7 +82,7 @@ const ConfigPartido = ({ navigation }) => {
       }
 
       const fecha = `${dia.padStart(2, '0')}/${mes.padStart(2, '0')}/${ano.padStart(2, '0')}`;
-
+      handleInsert(equipo, oponente, fecha, imagenOponente)
       Alert.alert(
         'Partido configurado',
         '¡Tu partido ha sido configurado exitosamente!',
@@ -92,6 +97,10 @@ const ConfigPartido = ({ navigation }) => {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
     }
   };
+
+  const handleInsert = async (equipo, oponente, fecha, imagenOponente) => {
+    
+  }
 
   return (
     <View style={styles.container}>
