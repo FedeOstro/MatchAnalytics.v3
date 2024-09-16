@@ -39,6 +39,29 @@ const CrearEquipo = ({ navigation }) => {
     }
   }
 
+  const fillImage = (deporte) => {
+    let imagen = null;
+    try {
+      switch (deporte) {
+        case 1:
+          imagen = '../images/football.png';
+          break;
+        case 2:
+          imagen = '../images/cesto.png';
+          break;
+        case 3:
+          imagen = '../images/basque.png';
+          break;
+        default:
+          console.log("Error setup foto");
+          break;
+      }
+      return imagen; 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleImagePick = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -47,7 +70,7 @@ const CrearEquipo = ({ navigation }) => {
         aspect: [4, 3],
         quality: 1,
       });
-
+      
       if (!result.cancelled) {
         setImagen(result.uri);
         const fileName = result.uri.split('/').pop();
@@ -63,8 +86,14 @@ const CrearEquipo = ({ navigation }) => {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
       return;
     }
-    const idusuario = 1
-    insertTeam(equipo, foto, deporte, idusuario)
+    const idusuario = 1;
+    if (imagen === null) {
+      const newimagen = fillImage(deporte);
+      insertTeam(equipo, newimagen, deporte, idusuario);
+    }else{
+      insertTeam(equipo, imagen, deporte, idusuario);
+    }
+  
     Alert.alert(
       'Equipo creado',
       '¡Tu equipo ha sido creado exitosamente!',
