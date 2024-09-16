@@ -28,5 +28,18 @@ export const fetchPartidoById = async (id: Int8Array) => {
 }
 
 export const updateMatch = async (id_partido, duration, pEqLocal, pEqOf) => {
-  await supabase.from('partidos').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
+  await supabase.from('partido').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
+}
+
+export const insertMatch = async (partido) => {
+  await supabase.from('partido').insert({
+    fecha: '',
+    ubacacion: ' ',
+    duracion: '',
+    idequipo1: '',
+    idequipo2: '',
+    name: '',
+    id_deporte: '',
+    foto: '',
+  })
 }

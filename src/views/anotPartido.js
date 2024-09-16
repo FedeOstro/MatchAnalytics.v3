@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
 import Header from '../components/Header';
 import { updateMatch } from '../../lib/fetchmatch'
+import { notesXMatch } from '../../lib/fetchnotes';
 
 const GameScreen = ({ route, navigation }) => {
   const { partido, duracion, entretiempo, tiempos } = route.params;
@@ -10,6 +11,7 @@ const GameScreen = ({ route, navigation }) => {
   const [playerNumber, setPlayerNumber] = useState('');
   const [playerNumber2, setPlayerNumber2] = useState('');
   const [selectedPoint, setSelectedPoint] = useState('');
+  const [notes, setNotes] = useState([])
 
   const openModal = (type) => {
     setModalType(type);
@@ -20,20 +22,25 @@ const GameScreen = ({ route, navigation }) => {
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
-    setSelectedPoint(''); // Reset the selected point when modal closes
+    setSelectedPoint('');
   };
 
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
   };
 
-  useEffect(() =>{
-    try{
-
-    }catch(error){
-      console.log(error)
+  useEffect(() => {
+    const fetchData = async () => {
+      try{
+        const acciones = await notesXMatch(partido.id_deporte)
+        console.log(acciones)
+        setNotes(acciones)
+      }catch(error){
+        console.log(error)
+      }
     }
-  })
+    fetchData()
+  }, []);
 
   const renderModalContent = () => {
     switch (modalType) {
@@ -75,7 +82,7 @@ const GameScreen = ({ route, navigation }) => {
                   selectedPoint ? styles.activeConfirmButton : {}
                 ]}
                 onPress={closeModal}
-                disabled={!selectedPoint} // Disable button if no point is selected
+                disabled={!selectedPoint}
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
@@ -120,12 +127,23 @@ const GameScreen = ({ route, navigation }) => {
             </View>
           </View>
         );
-      case 'Bloqueo':
-      case 'Robo':
-      case 'Falta':
-      case 'Perdida':
+      case 'Bloqueos':
+      case 'Robos':
+      case 'Faltas':
+      case 'Perdidas':
       case 'Rebote/Of':
       case 'Rebote/Def':
+      case 'Fouls':
+      case 'Tiros':
+      case 'Saltos ganado':
+      case 'Recuperos':
+      case 'Tiros fuera del arco':
+      case 'Tiros bloqueados':
+      case 'Tarjeta amarilla':
+      case 'Tarjeta roja':
+      case 'Fuera de juego':
+      case 'Goles':
+      case 'Atajos':
         return (
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{modalType}</Text>
@@ -143,7 +161,7 @@ const GameScreen = ({ route, navigation }) => {
                   playerNumber ? styles.activeConfirmButton : {}
                 ]}
                 onPress={closeModal}
-                disabled={!playerNumber} // Disable button if player number is not entered
+                disabled={!playerNumber} 
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
@@ -169,26 +187,18 @@ const GameScreen = ({ route, navigation }) => {
       </View>
       <Header />
       <View style={styles.contentContainer}>
-        <View style={styles.buttonsContainer}>
-          {[
-            'Punto',
-            'Asistencia',
-            'Bloqueo',
-            'Robo',
-            'Falta',
-            'Perdida',
-            'Rebote/Of',
-            'Rebote/Def'
-          ].map((type) => (
-            <TouchableOpacity
-              key={type}
-              style={styles.button}
-              onPress={() => openModal(type)}
-            >
-              <Text style={styles.buttonText}>{type}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+      <View style={styles.buttonsContainer}>
+        {notes && notes.map((note) => (
+        <TouchableOpacity
+          key={note.id_accion} 
+          style={styles.button}
+          onPress={() => openModal(note.descripcion)} 
+        >
+      <Text style={styles.buttonText}>{note.descripcion}</Text> 
+    </TouchableOpacity>
+  ))}
+</View>
+
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.timeButton}>
             <Text style={styles.timeButtonText}>Pedir tiempo</Text>

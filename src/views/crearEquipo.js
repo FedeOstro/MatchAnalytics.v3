@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import PlayerItem from '../components/Jugadores'; // Asegúrate de que este componente existe
 import { supabase } from '../../lib/supabase';
 import { date } from 'drizzle-orm/mysql-core';
+import { insertTeam } from '../../lib/fetchteams';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -63,12 +64,7 @@ const CrearEquipo = ({ navigation }) => {
       return;
     }
     const idusuario = 1
-    console.log(equipo + imagen + deporte + idusuario)
-    const {data, error } = await supabase.from('equipos').insert([{ equipo, imagen, deporte, idusuario }]).single();
-    if (error){
-      console.log(error);
-    }
-    
+    insertTeam(equipo, foto, deporte, idusuario)
     Alert.alert(
       'Equipo creado',
       '¡Tu equipo ha sido creado exitosamente!',

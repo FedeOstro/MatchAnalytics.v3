@@ -40,7 +40,6 @@ const ConfigAnot = ({ navigation }) => {
     }
   };
 
-
   return (
     <View style={styles.container}>
       <Header />

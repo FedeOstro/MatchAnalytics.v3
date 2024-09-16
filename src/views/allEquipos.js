@@ -26,9 +26,7 @@ const AllEquipo = ({ navigation }) => {
               console.log("Error setup foto");
               break;
           }
-        } else {
-          console.log("Foto puesta");
-        }
+        } 
         return equipo; 
       });
       setEquipos(updatedEquipos); 

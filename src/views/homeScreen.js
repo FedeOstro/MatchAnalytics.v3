@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions, TouchableOpacity } from 'react-native';
-import { supabase } from '../../lib/supabase'
 import { fetchAllEquipos } from '../../lib/fetchteams'
 import { fetch3partidos } from '../../lib/fetchmatch'
 import Equipo from '../components/Equipo';
@@ -34,8 +33,6 @@ const HomeScreen = ({navigation}) => {
               console.log("Error setup foto");
               break;
           }
-        } else {
-          console.log("Foto puesta");
         }
         return equipo; 
       });
@@ -63,8 +60,6 @@ const HomeScreen = ({navigation}) => {
               console.log("Error setup foto");
               break;
           }
-        } else {
-          console.log("Foto puesta");
         }
         return partido;
       }));
