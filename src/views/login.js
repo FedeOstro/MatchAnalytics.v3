@@ -1,7 +1,7 @@
 import * as react from 'react'
 
-function login ({navigation}) {
+function Login ({navigation}) {
     
 }
 
-export default login
+export default Login
