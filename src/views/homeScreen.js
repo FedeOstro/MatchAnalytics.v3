@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Image, Button, Dimensions, TouchableOpacity} from 'react-native';
 import { fetchAllEquipos } from '../../lib/fetchteams'
 import { fetch3partidos } from '../../lib/fetchmatch'
 import Equipo from '../components/Equipo';
@@ -11,7 +11,6 @@ const { width: screenWidth } = Dimensions.get('window');
 
 
 const HomeScreen = ({navigation}) => {
-  const { user, loading } = useAuth();
   const [equipos, setEquipos] = useState([]);
   const [partido, setPartidos] = useState([])
   const transparentColor = 'rgba(255, 0, 0, 0)'
@@ -84,10 +83,7 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigation.replace('login'); 
-    }  
+  useEffect(() => {  
     const fetchData = async () => {
       try{
         const data = await fetchAllEquipos()
@@ -99,15 +95,7 @@ const HomeScreen = ({navigation}) => {
       }
     }
     fetchData()
-  }, [loading, user, navigation]);
-
-  if (loading) {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-    );
-}
+  },[]);
 
   return (
       <View style={styles.container}>
