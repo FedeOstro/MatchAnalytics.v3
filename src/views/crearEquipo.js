@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, Dimensions, Alert, TouchableOpacity, Modal, ScrollView, Platform } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, Dimensions, Alert, TouchableOpacity, Modal, ScrollView, Platform, Vibration } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import PlayerItem from '../components/Jugadores'; 
 import { supabase } from '../../lib/supabase';
 import { insertTeam } from '../../lib/fetchteams';
+import { insertPlayers } from '../../lib/fetchplayers';
 
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
@@ -26,7 +27,7 @@ const CrearEquipo = ({ navigation }) => {
   const [nombreJugador, setNombreJugador] = useState('');
   const [numeroJugador, setNumeroJugador] = useState('');
   const [rolJugador, setRolJugador] = useState('');
-  const [fotoJugador, setFotoJugador] = useState(null);
+  const [ftJugador, setFotoJugador] = useState(null);
   const [fotoNombreJugador, setFotoNombreJugador] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
@@ -65,6 +66,7 @@ const CrearEquipo = ({ navigation }) => {
         setImagenNombre(fileName);
       }
     } catch (error) {
+      Vibration.vibrate(500)
       Alert.alert('Error', 'Ocurrió un error al seleccionar la imagen.');
     }
   };
@@ -84,48 +86,92 @@ const CrearEquipo = ({ navigation }) => {
         setFotoNombreJugador(fileName);
       }
     } catch (error) {
+      Vibration.vibrate(500)
       Alert.alert('Error', 'Ocurrió un error al seleccionar la imagen.');
     }
   };
 
   const handleButtonPress = async () => {
     if (!equipo || !deporte) {
+      Vibration.vibrate(500)
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
       return;
     }
     const idusuario = 1;
     if (imagen === null) {
-      const newimagen = fillImage(deporte);
-      insertTeam(equipo, newimagen, deporte, idusuario);
+      const newimagen = await fillImage(deporte);
+      const id = await insertTeam(equipo, newimagen, deporte, idusuario);
+      await insertPlayers(id, jugadores)
     } else {
-      insertTeam(equipo, imagen, deporte, idusuario);
+      const id = await insertTeam(equipo, imagen, deporte, idusuario);
+      await insertPlayers(id, jugadores)
     }
-  
+    Vibration.vibrate(500)
     Alert.alert('Equipo creado', '¡Tu equipo ha sido creado exitosamente!', [
       { text: 'OK', onPress: () => navigation.navigate('Home') }
     ]);
   };
 
-  const handleAddPlayer = () => {
-    const newPlayer = {
-      nombre: nombre,
-      numero: numero,
-      rol: posicion,
-      foto: fotoJugador
-    };
-    setJugadores([...jugadores, newPlayer]);
-    setModalVisible(false);
-    setNombreJugador('');
-    setNumeroJugador('');
-    setRolJugador('');
-    setFotoJugador(null);
+  const fillImage = async (data) => {
+    let foto = "" 
+    try {
+        switch (data) {
+        case 1:
+          foto = '../images/football.png';
+          break;
+        case 2:
+          foto = '../images/cesto.png';
+          break;
+        case 3:
+          foto = '../images/basque.png';
+          break;
+        default:
+          console.log("Error setup foto");
+          break;
+        }
+        return foto
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+
+  const handleAddPlayer = () => { 
+    if (!ftJugador){
+      const ft = "../images/perfilDefault.png"
+      const newPlayer = {
+        nombre: nombre,
+        numero: numero,
+        rol: posicion,
+        foto: ft
+      };
+      setJugadores([...jugadores, newPlayer]);
+      setModalVisible(false);
+      setNombreJugador('');
+      setNumeroJugador('');
+      setRolJugador('');
+      setFotoJugador(null);
+    }else{
+      const newPlayer = {
+        nombre: nombre,
+        numero: numero,
+        rol: posicion,
+        foto: ftJugador
+      };
+      setJugadores([...jugadores, newPlayer]);
+      setModalVisible(false);
+      setNombreJugador('');
+      setNumeroJugador('');
+      setRolJugador('');
+      setFotoJugador(null);
+    }
   };
 
   const handleAceptar = () => {
     const nombreValido = /^[a-zA-Z\s]+$/.test(nombre);
     const numeroValido = /^[0-9]+$/.test(numero);
     const rolValido = /^[a-zA-Z\s]+$/.test(posicion);
-    console.log(nombreValido)
     if (!nombreValido || !numeroValido || !rolValido) {
       let errorMessage = 'Por favor completa todos los campos correctamente:\n';
   
@@ -138,7 +184,6 @@ const CrearEquipo = ({ navigation }) => {
       if (!rolValido) {
         errorMessage += '- El rol solo puede contener letras y espacios.';
       }
-  
       Alert.alert('Error de validación', errorMessage);
       return;
     }
@@ -149,47 +194,46 @@ const CrearEquipo = ({ navigation }) => {
   handleSports();
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={styles.container}>
-        <Header />
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <View style={styles.flec}>
-            <Image source={require('../images/flecha.png')} />
-          </View>
-        </TouchableOpacity>
-  
-        <Image source={require('../images/barCrearEquipo.png')} style={styles.bar} />
-        <View style={styles.formWrapper}>
-          <View style={styles.formContainer}>
+    <View style={styles.container}>
+      <Header />
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <View style={styles.flec}>
+          <Image source={require('../images/flecha.png')} />
+        </View>
+      </TouchableOpacity>
+
+      <Image source={require('../images/barCrearEquipo.png')} style={styles.bar} />
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            value={equipo}
+            onChangeText={setEquipo}
+            placeholder="Nombre del equipo"
+          />
+          <TouchableOpacity onPress={handleImagePick}>
             <TextInput
               style={styles.input}
-              value={equipo}
-              onChangeText={setEquipo}
-              placeholder="Nombre del equipo"
+              value={imagenNombre ? imagenNombre : 'Añadir foto...'}
+              editable={false}
             />
-            <TouchableOpacity onPress={handleImagePick}>
-              <TextInput
-                style={styles.input}
-                value={imagenNombre ? imagenNombre : 'Añadir foto...'}
-                editable={false}
-              />
-            </TouchableOpacity>
-            {imagen && <Image source={{ uri: imagen }} style={styles.imagePreview} />}
-            <Picker
-              selectedValue={deporte}
-              onValueChange={setDeporte}
-              style={styles.picker}
-            >
-              <Picker.Item label="Elige un deporte" value="" />
-              {listDep.map(dep => (
-                <Picker.Item label={dep.nombre} value={dep.id_deporte} key={dep.id_deporte} />
-              ))}
-            </Picker>
-            <View style={styles.buttonContainer}>
-              <Button title="Aceptar" onPress={handleButtonPress} color="#007BFF" />
-            </View>
+          </TouchableOpacity>
+          {imagen && <Image source={{ uri: imagen }} style={styles.imagePreview} />}
+          <Picker
+            selectedValue={deporte}
+            onValueChange={setDeporte}
+            style={styles.picker}
+          >
+            <Picker.Item label="Elige un deporte" value="" />
+            {listDep.map(dep => (
+              <Picker.Item label={dep.nombre} value={dep.id_deporte} key={dep.id_deporte} />
+            ))}
+          </Picker>
+          <View style={styles.buttonContainer}>
+            <Button title="Aceptar" onPress={handleButtonPress} color="#007BFF" />
           </View>
-  
+
           <Text style={styles.jugadoresTitle}>Jugadores</Text>
           <View style={styles.playerListContainer}>
             {jugadores.map((player, index) => (
@@ -200,28 +244,30 @@ const CrearEquipo = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-  
-        <Modal visible={modalVisible} transparent={true} animationType="slide">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Image
-                source={require('../images/barJugadorNew.png')}
-                style={[styles.bar2]} 
-                resizeMode="stretch"
-              />
-              <View contentContainerStyle={styles.modalContent}>
-                {/* Añadir Imagen */}
-                <TouchableOpacity onPress={handlePlayerImagePick} style={styles.imagePickerContainer}>
-                  <Image
-                    source={fotoJugador ? { uri: fotoJugador } : require('../images/perfilDefault.png')}
-                    style={styles.imagePlaceholder}
-                  />
-                  <Text style={styles.imagePickerText}>
-                    {fotoNombreJugador ? fotoNombreJugador : 'Añade foto..'}
-                  </Text>
-                </TouchableOpacity>
-                <View style={styles.formjugador}> 
-                {/* Formulario */}
+      </ScrollView>
+
+      {/* Modal */}
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Image
+              source={require('../images/barJugadorNew.png')}
+              style={styles.bar2}
+              resizeMode="stretch"
+            />
+            <View contentContainerStyle={styles.modalContent}>
+              {/* Modal contenido */}
+              <TouchableOpacity onPress={handlePlayerImagePick} style={styles.imagePickerContainer}>
+                <Image
+                  source={ftJugador ? { uri: ftJugador } : require('../images/perfilDefault.png')}
+                  style={styles.imagePlaceholder}
+                />
+                <Text style={styles.imagePickerText}>
+                  {fotoNombreJugador ? fotoNombreJugador : 'Añade foto..'}
+                </Text>
+              </TouchableOpacity>
+              <View style={styles.formjugador}>
+                {/* Formulario jugador */}
                 <TextInput
                   style={styles.input}
                   value={nombre}
@@ -241,8 +287,7 @@ const CrearEquipo = ({ navigation }) => {
                   onChangeText={setPosicion}
                   placeholder="Posición / Rol"
                 />
-
-                {/* Botones de Aceptar y Cerrar */}
+                {/* Botones */}
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={[
@@ -261,16 +306,13 @@ const CrearEquipo = ({ navigation }) => {
                     <Text style={styles.closeButtonText}>Cerrar</Text>
                   </TouchableOpacity>
                 </View>
-                </View>
               </View>
             </View>
           </View>
-        </Modal>
-      </View>
-    </ScrollView>
+        </View>
+      </Modal>
+    </View>
   );
-  
-  
 };
 
 const styles = StyleSheet.create({
@@ -286,11 +328,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
   },
-  formWrapper: {
+  scrollContainer: {
     padding: 20,
+    paddingBottom: 40, // Añade un padding inferior para permitir el scroll completo
   },
   formContainer: {
     marginBottom: 20,
+    padding: 20,
+    borderRadius: 10,
   },
   input: {
     borderWidth: 1,
@@ -322,14 +367,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   playerListContainer: {
-    maxHeight: screenHeight * 0.3,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   addPlayerButtonContainer: {
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 10,
   },
   addPlayerButtonText: {
     color: '#fff',
@@ -397,5 +442,6 @@ const styles = StyleSheet.create({
     margin: 20
   }
 });
+
 
 export default CrearEquipo;

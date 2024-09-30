@@ -5,6 +5,10 @@ export const fetchUser = async (name, contra) => {
     if(error){
         console.log(error)
     }else{
-        return data
+        if(data){
+            return true
+        }else{
+            return false
+        }
     }
 } 

@@ -19,15 +19,15 @@ export const fetchEquipoById = async (id: Int8Array) => {
 }
 
 export const insertTeam = async (nombre, foto, id_equipo, id_usuario) => {
-  const { data, error } = await supabase.from('equipo').insert({
+  const { data , error } = await supabase.from('equipo').insert({
     nombre: nombre,
     foto: foto,
     id_deporte: id_equipo,
     id_usuario: id_usuario
-  })
+  }).select('id_equipo')
   if(error){
     console.log(error)
   }else{
-    return('ok')
+    return(data[0].id_equipo)
   }
 }

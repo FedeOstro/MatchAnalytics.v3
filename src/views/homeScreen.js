@@ -11,6 +11,7 @@ const { width: screenWidth } = Dimensions.get('window');
 
 
 const HomeScreen = ({navigation}) => {
+  const { user, loading } = useAuth();
   const [equipos, setEquipos] = useState([]);
   const [partido, setPartidos] = useState([])
   const transparentColor = 'rgba(255, 0, 0, 0)'
@@ -84,6 +85,9 @@ const HomeScreen = ({navigation}) => {
   };
 
   useEffect(() => {
+    if (!loading && !user) {
+      navigation.replace('login'); 
+    }  
     const fetchData = async () => {
       try{
         const data = await fetchAllEquipos()
@@ -95,8 +99,16 @@ const HomeScreen = ({navigation}) => {
       }
     }
     fetchData()
-  }, []);
-  
+  }, [loading, user, navigation]);
+
+  if (loading) {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+    );
+}
+
   return (
       <View style={styles.container}>
         <View style={styles.header1}>

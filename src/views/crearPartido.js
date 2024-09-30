@@ -62,27 +62,32 @@ const ConfigPartido = ({ navigation }) => {
       const anoNum = parseInt(ano, 10);
 
       if (isNaN(diaNum) || isNaN(mesNum) || isNaN(anoNum)) {
+        Vibration.vibrate(500)
         Alert.alert('Advertencia', 'Día, mes y año deben ser números válidos.');
         return;
       }
 
       if (mesNum < 1 || mesNum > 12) {
+        Vibration.vibrate(500)
         Alert.alert('Advertencia', 'El mes debe estar entre 1 y 12.');
         return;
       }
 
       if (diaNum < 1 || diaNum > 31) {
+        Vibration.vibrate(500)
         Alert.alert('Advertencia', 'El día debe estar entre 1 y 31.');
         return;
       }
 
       if (anoNum < 1) {
+        Vibration.vibrate(500)
         Alert.alert('Advertencia', 'El año debe ser mayor o igual a 1.');
         return;
       }
 
       const fecha = `${dia.padStart(2, '0')}/${mes.padStart(2, '0')}/${ano.padStart(2, '0')}`;
       handleInsert(equipo, oponente, fecha, imagenOponente)
+      Vibration.vibrate(500)
       Alert.alert(
         'Partido configurado',
         '¡Tu partido ha sido configurado exitosamente!',
@@ -94,6 +99,7 @@ const ConfigPartido = ({ navigation }) => {
         ]
       );
     } else {
+      Vibration.vibrate(500)
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
     }
   };
