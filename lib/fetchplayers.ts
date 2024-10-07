@@ -27,3 +27,5 @@ export const insertPlayers = async (id: Int16Array, jugadores) => {
         return(error)
     }
 }
+
+export const fetchPlayer = async

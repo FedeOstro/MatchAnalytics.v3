@@ -3,31 +3,55 @@ import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'reac
 import Header from '../components/Header';
 import { updateMatch } from '../../lib/fetchmatch'
 import { notesXMatch } from '../../lib/fetchnotes';
-import { addAnot } from '../../lib/fetchAnots';
+import { addAnot, addOpAnot } from '../../lib/fetchAnots';
 
 const GameScreen = ({ route, navigation }) => {
   const { partido, entretiempo, tiempos } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
+  const [modalId, setModalId] = useState('')
+  const [modalTeamId, setModalTeam] = useState('')
   const [playerNumber, setPlayerNumber] = useState('');
   const [playerNumber2, setPlayerNumber2] = useState('');
   const [selectedPoint, setSelectedPoint] = useState('');
   const [notes, setNotes] = useState([])
   const [timeLeft, setTimeLeft] = useState(partido.duracion * 60);
-  const [isActive, setIsActive] = useState(false);
-
-  const openModal = (type) => {
+  const [isActive, setIsAc1tive] = useState(false);
+  
+  const openModal = (type, id) => {
     setModalType(type);
+    setModalId(id)
     setModalVisible(true);
   };
-
-  const closeModal = async (id) => {
-    addAnot(id)
+ 
+  const closeModal = async () => {
+    let special = false
+    if(selectedPoint === 'Triple'){
+      special = true
+      
+      addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
+    }
+    addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
     setSelectedPoint('');
   };
+
+  const cancelModal = async () => {
+    setModalVisible(false);
+    setPlayerNumber('');
+    setPlayerNumber2('');
+    setSelectedPoint('');
+  }
+
+  const opModal = async () => {
+    addAnot(modalId, partido.id_partido, partido.idequipo2)
+    setModalVisible(false);
+    setPlayerNumber('');
+    setPlayerNumber2('');
+    setSelectedPoint('');
+  }
 
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
@@ -43,8 +67,14 @@ const GameScreen = ({ route, navigation }) => {
       }
     }
     fetchData()
-  }, [isActive, timeLeft]);
- const renderModalContent = () => {
+  }, [isActive, timeLeft]); 
+  const renderModalContent = () => {
+    const OpponentButton = () => (
+      <TouchableOpacity style={styles.opponentButton} onPress={opModal}>
+        <Text style={styles.opponentButtonText}>Equipo Oponente</Text>
+      </TouchableOpacity>
+    );
+  
     switch (modalType) {
       case 'Punto':
         return (
@@ -61,20 +91,20 @@ const GameScreen = ({ route, navigation }) => {
               <TouchableOpacity
                 style={[
                   styles.simpleButton,
-                  selectedPoint === 'Simple' && styles.selectedButton
-                ]}
-                onPress={() => handlePointSelection('Simple')}
-              >
-                <Text style={styles.buttonText}>Simple</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.doubleButton,
                   selectedPoint === 'Doble' && styles.selectedButton
                 ]}
                 onPress={() => handlePointSelection('Doble')}
               >
                 <Text style={styles.buttonText}>Doble</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.doubleButton,
+                  selectedPoint === 'Triple' && styles.selectedButton
+                ]}
+                onPress={() => handlePointSelection('Triple')}
+              >
+                <Text style={styles.buttonText}>Triple</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.modalActions}>
@@ -88,10 +118,11 @@ const GameScreen = ({ route, navigation }) => {
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+              <TouchableOpacity style={styles.cancelButton} onPress={cancelModal}>
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
             </View>
+            <OpponentButton />
           </View>
         );
       case 'Asistencia':
@@ -119,14 +150,15 @@ const GameScreen = ({ route, navigation }) => {
                   playerNumber && playerNumber2 ? styles.activeConfirmButton : {}
                 ]}
                 onPress={closeModal}
-                disabled={!(playerNumber && playerNumber2)} // Disable button if both player numbers are not entered
+                disabled={!(playerNumber && playerNumber2)}
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+              <TouchableOpacity style={styles.cancelButton} onPress={cancelModal}>
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
             </View>
+            <OpponentButton />
           </View>
         );
       case 'Bloqueos':
@@ -163,20 +195,22 @@ const GameScreen = ({ route, navigation }) => {
                   playerNumber ? styles.activeConfirmButton : {}
                 ]}
                 onPress={closeModal}
-                disabled={!playerNumber} 
+                disabled={!playerNumber}
               >
                 <Text style={styles.confirmButtonText}>Confirmar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+              <TouchableOpacity style={styles.cancelButton} onPress={cancelModal}>
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>
             </View>
+            <OpponentButton />
           </View>
         );
       default:
         return null;
     }
   };
+  
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -193,7 +227,7 @@ const GameScreen = ({ route, navigation }) => {
         <TouchableOpacity
           key={note.id_accion} 
           style={styles.button}
-          onPress={() => openModal(note.descripcion)} 
+          onPress={() => openModal(note.descripcion, note.id_accion)} 
         >
       <Text style={styles.buttonText}>{note.descripcion}</Text> 
     </TouchableOpacity>
@@ -402,6 +436,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  opponentButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  opponentButtonText: {
+    color: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
