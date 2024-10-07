@@ -8,6 +8,7 @@ import PlayerItem from '../components/Jugadores';
 import { supabase } from '../../lib/supabase';
 import { insertTeam } from '../../lib/fetchteams';
 import { insertPlayers } from '../../lib/fetchplayers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
@@ -97,7 +98,10 @@ const CrearEquipo = ({ navigation }) => {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar.');
       return;
     }
-    const idusuario = 1;
+    const user = await AsyncStorage.getItem('user')
+    const userParsed = JSON.parse(user)
+    const idusuario = userParsed.id;
+    console.log(idusuario)
     if (imagen === null) {
       const newimagen = await fillImage(deporte);
       const id = await insertTeam(equipo, newimagen, deporte, idusuario);

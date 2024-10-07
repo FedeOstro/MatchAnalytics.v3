@@ -28,6 +28,7 @@ function MyStack() {
       try {
         const user = await AsyncStorage.getItem('user');
         if (user) {
+          console.log(user)
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -97,11 +98,56 @@ function MyStack() {
             />
           </>
         ) : (
-          // Si no está autenticado, muestra solo la pantalla de login
+          <>
           <Stack.Screen 
             name="login" 
             component={login}
           />
+          <Stack.Screen 
+              name="Home"
+              component={homeScreen}
+          />
+          <Stack.Screen 
+              name="verEquipo" 
+              component={verEquipo}
+            />
+            <Stack.Screen
+              name="allEquipo"
+              component={allEquipos}
+            />
+            <Stack.Screen
+              name="anotarPartido"
+              component={anotPartido}
+            />
+            <Stack.Screen
+              name="AllPartidos"
+              component={AllPartidos}
+            />
+            <Stack.Screen
+              name="crearEquipo"
+              component={crearEquipo}
+            />
+            <Stack.Screen
+              name="crearPartido"
+              component={crearPartido}
+            />
+            <Stack.Screen
+              name="statsJugador"
+              component={statsJugador}
+            />
+            <Stack.Screen
+              name="startJugadorxPartido"
+              component={startJugadorxPartido}
+            />
+            <Stack.Screen
+              name="statsPartido"
+              component={statsPartido}
+            />
+            <Stack.Screen
+              name="ConfigAnot"
+              component={ConfigAnot}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

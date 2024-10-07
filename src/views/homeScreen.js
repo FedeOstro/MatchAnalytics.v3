@@ -13,8 +13,9 @@ const { width: screenWidth } = Dimensions.get('window');
 const HomeScreen = ({navigation}) => {
   const [equipos, setEquipos] = useState([]);
   const [partido, setPartidos] = useState([])
+  const [usuario, setUser] = useState([])
   const transparentColor = 'rgba(255, 0, 0, 0)'
-
+  
   const fillImage = (data) => {
     try {
       const updatedEquipos = data.map(equipo => {
@@ -86,6 +87,10 @@ const HomeScreen = ({navigation}) => {
   useEffect(() => {  
     const fetchData = async () => {
       try{
+        const storedUser = await AsyncStorage.getItem('user');
+        const parsedUser = JSON.parse(storedUser); 
+        console.log(parsedUser);
+        setUser(parsedUser)
         const data = await fetchAllEquipos()
         fillImage(data)
         const data2 = await fetch3partidos()
