@@ -101,7 +101,6 @@ const CrearEquipo = ({ navigation }) => {
     const user = await AsyncStorage.getItem('user')
     const userParsed = JSON.parse(user)
     const idusuario = userParsed.id;
-    console.log(idusuario)
     if (imagen === null) {
       const newimagen = await fillImage(deporte);
       const id = await insertTeam(equipo, newimagen, deporte, idusuario);

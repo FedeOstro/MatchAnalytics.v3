@@ -3,22 +3,26 @@ import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'reac
 import Header from '../components/Header';
 import { updateMatch } from '../../lib/fetchmatch'
 import { notesXMatch } from '../../lib/fetchnotes';
+import { addAnot } from '../../lib/fetchAnots';
 
 const GameScreen = ({ route, navigation }) => {
-  const { partido, duracion, entretiempo, tiempos } = route.params;
+  const { partido, entretiempo, tiempos } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [playerNumber, setPlayerNumber] = useState('');
   const [playerNumber2, setPlayerNumber2] = useState('');
   const [selectedPoint, setSelectedPoint] = useState('');
   const [notes, setNotes] = useState([])
+  const [timeLeft, setTimeLeft] = useState(partido.duracion * 60);
+  const [isActive, setIsActive] = useState(false);
 
   const openModal = (type) => {
     setModalType(type);
     setModalVisible(true);
   };
 
-  const closeModal = () => {
+  const closeModal = async (id) => {
+    addAnot(id)
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
@@ -33,16 +37,14 @@ const GameScreen = ({ route, navigation }) => {
     const fetchData = async () => {
       try{
         const acciones = await notesXMatch(partido.id_deporte)
-        console.log(acciones)
         setNotes(acciones)
       }catch(error){
         console.log(error)
       }
     }
     fetchData()
-  }, []);
-
-  const renderModalContent = () => {
+  }, [isActive, timeLeft]);
+ const renderModalContent = () => {
     switch (modalType) {
       case 'Punto':
         return (
@@ -175,14 +177,13 @@ const GameScreen = ({ route, navigation }) => {
         return null;
     }
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.time}>{duracion + ' mins'}</Text>
+        <Text style={styles.time}>{partido.duracion + ' mins'}</Text>
         <Text style={styles.period}>{'1/' + tiempos}</Text>
         <Text style={styles.match}>
-          {partido.equipo1 + ' vs ' + partido.equipo2}
+          {partido.name}
         </Text>
       </View>
       <Header />

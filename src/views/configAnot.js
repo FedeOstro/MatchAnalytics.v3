@@ -26,20 +26,18 @@ const ConfigAnot = ({ navigation }) => {
   })
 
   const handleButtonPress = () => {
-    if (selectedPartidoIndex !== undefined && duracion !== '' && entretiempo !== '' && tiempos !== '' &&
-        Number(duracion) >= 0 && Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
+    if (selectedPartidoIndex !== undefined  && entretiempo !== '' && tiempos !== '' &&
+        Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
       const partido = Partidos[selectedPartidoIndex-1];
       navigation.navigate('anotarPartido', {
         partido: partido,
-        duracion: duracion,
         entretiempo: entretiempo,
         tiempos: tiempos,
       });
     } else {
       Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar. Asegúrate de que ningún campo tenga un valor menor a 0.');
     }
-  };
-
+  }
   return (
     <View style={styles.container}>
       <Header />
@@ -66,15 +64,6 @@ const ConfigAnot = ({ navigation }) => {
                 />
               ))}
             </Picker>
-          </View>
-          <View style={styles.inputGroup}>
-            <TextInput
-              style={styles.input}
-              value={duracion}
-              onChangeText={setDuracion}
-              placeholder="Duración"
-              keyboardType="numeric"
-            />
           </View>
           <View style={styles.inputGroup}>
             <TextInput

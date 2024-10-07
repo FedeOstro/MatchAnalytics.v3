@@ -6,6 +6,7 @@ import { fetch3partidos } from '../../lib/fetchmatch'
 import Equipo from '../components/Equipo';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RectButton } from 'react-native-gesture-handler';
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -89,7 +90,6 @@ const HomeScreen = ({navigation}) => {
       try{
         const storedUser = await AsyncStorage.getItem('user');
         const parsedUser = JSON.parse(storedUser); 
-        console.log(parsedUser);
         setUser(parsedUser)
         const data = await fetchAllEquipos()
         fillImage(data)
@@ -109,7 +109,7 @@ const HomeScreen = ({navigation}) => {
         </View>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.flex}>
-              <Text style={styles.welcome}>Bienvenido Federico!!</Text>
+              <Text style={styles.welcome}>Bienvenido {usuario.username}!!</Text>
             </View>
           <View style={styles.bar}>
             <Image source={require('../images/BarraEquiposbarEquipo.png')} style={styles.barEquip}/>

@@ -28,7 +28,6 @@ function MyStack() {
       try {
         const user = await AsyncStorage.getItem('user');
         if (user) {
-          console.log(user)
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
