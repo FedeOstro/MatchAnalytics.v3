@@ -15,9 +15,8 @@ const GameScreen = ({ route, navigation }) => {
   const [playerNumber2, setPlayerNumber2] = useState('');
   const [selectedPoint, setSelectedPoint] = useState('');
   const [notes, setNotes] = useState([])
-  const [timeLeft, setTimeLeft] = useState(partido.duracion * 60);
-  const [isActive, setIsAc1tive] = useState(false);
-  
+  const [seconds, setSeconds] = useState(0)
+
   const openModal = (type, id) => {
     setModalType(type);
     setModalId(id)
@@ -65,7 +64,7 @@ const GameScreen = ({ route, navigation }) => {
       }
     }
     fetchData()
-  }, [isActive, timeLeft]); 
+  },); 
   const renderModalContent = () => {
     const OpponentButton = () => (
       <TouchableOpacity style={styles.opponentButton} onPress={opModal}>
@@ -106,16 +105,16 @@ const GameScreen = ({ route, navigation }) => {
               </TouchableOpacity>
             </View>
             <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={[
-                  styles.confirmButton,
-                  selectedPoint ? styles.activeConfirmButton : {}
-                ]}
-                onPress={closeModal}
-                disabled={!selectedPoint}
-              >
-                <Text style={styles.confirmButtonText}>Confirmar</Text>
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.confirmButton,
+                selectedPoint && playerNumber ? styles.activeConfirmButton : {}
+              ]}
+              onPress={closeModal}
+              disabled={!(selectedPoint && playerNumber)} 
+            >
+              <Text style={styles.confirmButtonText}>Confirmar</Text>
+            </TouchableOpacity>
               <TouchableOpacity style={styles.cancelButton} onPress={cancelModal}>
                 <Text style={styles.cancelButtonText}>Cancelar</Text>
               </TouchableOpacity>

@@ -11,7 +11,6 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const TeamScreen = ({ route, navigation }) => {
     const { idEquipo } = route.params || {};
-    console.log(idEquipo);
     const [partidos, setPartidos] = useState([])
     const [players, setPlayers] = useState([])
     const [showAllPartidos, setShowAllPartidos] = useState(false);
@@ -23,7 +22,6 @@ const TeamScreen = ({ route, navigation }) => {
                 player.foto = '../images/perfilDefault.png'
             }
         });
-        console.log(players)
         return players
     }
 

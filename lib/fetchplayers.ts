@@ -11,9 +11,7 @@ export const getAllPlayers = async (id: Int16Array) => {
 
 export const insertPlayers = async (id: Int16Array, jugadores) => {
     try{
-        console.log(jugadores)
         jugadores.forEach( async jugador => {
-            console.log(jugador)
             const {data, error } = await supabase.from('jugadores').insert({
                 nombre: jugador.nombre,
                 numero: jugador.numero,
