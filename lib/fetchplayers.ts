@@ -28,4 +28,10 @@ export const insertPlayers = async (id: Int16Array, jugadores) => {
     }
 }
 
-export const fetchPlayer = async
+export const fetchPlayer = async () => {
+    try{
+
+    }catch{
+        
+    }
+}
