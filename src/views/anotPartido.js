@@ -25,10 +25,8 @@ const GameScreen = ({ route, navigation }) => {
   };
  
   const closeModal = async () => {
-    let special = false
     if(selectedPoint === 'Triple'){
       special = true
-      
       addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
     }
     addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
@@ -46,7 +44,7 @@ const GameScreen = ({ route, navigation }) => {
   }
 
   const opModal = async () => {
-    addAnot(modalId, partido.id_partido, partido.idequipo2)
+    addOpAnot(modalId, partido.idequipo2, partido.id_partido)
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
