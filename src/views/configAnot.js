@@ -27,10 +27,11 @@ const ConfigAnot = ({ navigation }) => {
 
   const handleButtonPress = () => {
     if (selectedPartidoIndex !== undefined  && entretiempo !== '' && tiempos !== '' &&
-        Number(entretiempo) >= 0 && Number(tiempos) >= 0) {
+        Number(entretiempo) >= 0 && Number(tiempos) >= 0 && duracion !== '' && Number(duracion) >= 1) {
       const partido = Partidos[selectedPartidoIndex-1];
       navigation.navigate('anotarPartido', {
         partido: partido,
+        duracion: duracion,
         entretiempo: entretiempo,
         tiempos: tiempos,
       });
@@ -64,6 +65,15 @@ const ConfigAnot = ({ navigation }) => {
                 />
               ))}
             </Picker>
+          </View>
+          <View style={styles.inputGroup}>
+            <TextInput
+              style={styles.input}
+              value={duracion}
+              onChangeText={setDuracion}
+              placeholder="Duracion"
+              keyboardType="numeric"
+            />
           </View>
           <View style={styles.inputGroup}>
             <TextInput

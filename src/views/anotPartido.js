@@ -6,7 +6,7 @@ import { notesXMatch } from '../../lib/fetchnotes';
 import { addAnot, addOpAnot } from '../../lib/fetchAnots';
 
 const GameScreen = ({ route, navigation }) => {
-  const { partido, entretiempo, tiempos } = route.params;
+  const { partido, duracion, entretiempo, tiempos } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState('');
   const [modalId, setModalId] = useState('')
@@ -16,6 +16,11 @@ const GameScreen = ({ route, navigation }) => {
   const [selectedPoint, setSelectedPoint] = useState('');
   const [notes, setNotes] = useState([])
   const [seconds, setSeconds] = useState(0)
+  const [minutes, setMinutes] = useState(duracion/2)
+  const [sets, setSets] = useState(tiempos)
+  const [setOn, setSetOn] = useState(1)
+  const [modalEnd, setModalend] = useState(false)
+  const [modalBreak, setModalBreak] = useState(false)
 
   const openModal = (type, id) => {
     setModalType(type);
@@ -53,7 +58,7 @@ const GameScreen = ({ route, navigation }) => {
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
   };
-
+  var timer; 
   useEffect(() => {
     const fetchData = async () => {
       try{
@@ -64,14 +69,66 @@ const GameScreen = ({ route, navigation }) => {
       }
     }
     fetchData()
-  },); 
+    const timer = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds === 0) {
+          if (minutes === 0) {
+            clearInterval(timer);
+            setSetOn((prevSetOn) => {
+              const newSetOn = prevSetOn + 1;
+              if (newSetOn > sets) {
+                setIsModalVisible(true);
+              } else {
+                setMinutes(duracion/2); 
+                setSeconds(0);
+              }
+              return newSetOn;
+            });
+          } else {
+            setMinutes((prevMinutes) => prevMinutes - 1);
+            return 59;
+          }
+        } else {
+          return prevSeconds - 1;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  },[minutes, seconds]); 
+
+  
+
+
   const renderModalContent = () => {
     const OpponentButton = () => (
       <TouchableOpacity style={styles.opponentButton} onPress={opModal}>
         <Text style={styles.opponentButtonText}>Equipo Oponente</Text>
       </TouchableOpacity>
     );
-  
+    
+    if(modalEnd == true){
+      return(
+        <Modal visible={modalEnd} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>¡Partido finalizado!</Text>
+            </View>
+          </View>
+        </Modal>
+      )
+    }
+    if(modalBreak == true){
+      return(
+        <Modal visible={modalBreak} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+                
+            </View>
+          </View>
+        </Modal>
+      )
+    }
     switch (modalType) {
       case 'Punto':
         return (
@@ -211,7 +268,7 @@ const GameScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
-        <Text style={styles.time}>{partido.duracion + ' mins'}</Text>
+        <Text style={styles.time}>{minutes<10 ? "0"+minutes: minutes}:{seconds<10 ? "0"+seconds: seconds}</Text>
         <Text style={styles.period}>{'1/' + tiempos}</Text>
         <Text style={styles.match}>
           {partido.name}
@@ -273,10 +330,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   time: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'left',
+    marginLeft: 5
   },
   period: {
     fontSize: 18,

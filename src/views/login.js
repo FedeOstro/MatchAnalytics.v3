@@ -43,6 +43,12 @@ function LoginScreen({ navigation }) {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
+    if (!newEmail.endsWith('@gmail.com')) {
+      Vibration.vibrate();
+      Alert.alert('Error', 'El correo debe terminar en "@gmail.com".');
+      return;
+    }
+  
     let cheq = null;
     cheq = await cheqMail(newEmail);
     if (cheq === true) {
@@ -51,6 +57,7 @@ function LoginScreen({ navigation }) {
       setModalVisible(false);
       return;
     }
+    
     cheq = await cheqName(newUsername);
     if (cheq === true) {
       Vibration.vibrate(); 
@@ -58,6 +65,7 @@ function LoginScreen({ navigation }) {
       setModalVisible(false);
       return;
     }
+    
     try {
       await addUser(newUsername, newEmail, newPassword);
       Alert.alert('Éxito', 'Usuario agregado exitosamente');
@@ -67,7 +75,6 @@ function LoginScreen({ navigation }) {
       Alert.alert('Error', 'Hubo un problema al agregar el usuario');
     }
   };
-
   return (
     <View style={styles.container}>
       <Header />
