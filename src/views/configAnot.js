@@ -26,9 +26,19 @@ const ConfigAnot = ({ navigation }) => {
   })
 
   const handleButtonPress = () => {
-    if (selectedPartidoIndex !== undefined  && entretiempo !== '' && tiempos !== '' &&
-        Number(entretiempo) >= 0 && Number(tiempos) >= 0 && duracion !== '' && Number(duracion) >= 1) {
-      const partido = Partidos[selectedPartidoIndex-1];
+    if (
+      selectedPartidoIndex !== undefined &&
+      entretiempo !== '' &&
+      tiempos !== '' &&
+      duracion !== '' &&
+      Number(duracion) >= 1 &&
+      Number(entretiempo) >= 0 &&
+      Number(tiempos) >= 0 &&
+      Number(duracion) !== 1 &&
+      Number(entretiempo) !== 1 &&
+      Number(tiempos) !== 1
+    ) {
+      const partido = Partidos[selectedPartidoIndex - 1];
       navigation.navigate('anotarPartido', {
         partido: partido,
         duracion: duracion,
@@ -36,9 +46,12 @@ const ConfigAnot = ({ navigation }) => {
         tiempos: tiempos,
       });
     } else {
-      Alert.alert('Advertencia', 'Por favor, completa todos los campos correctamente antes de continuar. Asegúrate de que ningún campo tenga un valor menor a 0.');
+      Alert.alert(
+        'Advertencia',
+        'Por favor, completa todos los campos correctamente antes de continuar. Asegúrate de que ningún campo tenga un valor de 1 o menor a 0.'
+      );
     }
-  }
+  };
   return (
     <View style={styles.container}>
       <Header />
