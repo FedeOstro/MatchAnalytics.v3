@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
 import Header from '../components/Header';
 import { updateMatch } from '../../lib/fetchmatch'
@@ -21,6 +21,8 @@ const GameScreen = ({ route, navigation }) => {
   const [setOn, setSetOn] = useState(1)
   const [modalEnd, setModalend] = useState(false)
   const [modalBreak, setModalBreak] = useState(false)
+
+  const timerRef = useRef(null); 
 
   const openModal = (type, id) => {
     setModalType(type);
@@ -59,10 +61,39 @@ const GameScreen = ({ route, navigation }) => {
     setModalBreak(false);
     setMinutes(duracion / sets);
     setSeconds(0);
+    startMainTimer(); // Reinicia el temporizador principal al cerrar el modal de descanso
   };
 
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
+  };
+
+  const startMainTimer = () => {
+    timerRef.current = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds === 0 && minutes === 0) {
+          console.log("Fin del tiempo");
+          setSetOn((prevSetOn) => {
+            const newSetOn = prevSetOn + 1;
+            if (newSetOn > sets) {
+              setModalend(true);
+            } else {
+              setMinutes(entretiempo);
+              setSeconds(0);
+              setModalBreak(true);
+              clearInterval(timerRef.current); // Pausa el temporizador principal
+            }
+            return newSetOn;
+          });
+          return 0;
+        } else if (prevSeconds === 0) {
+          setMinutes((prevMinutes) => prevMinutes - 1);
+          return 59;
+        } else {
+          return prevSeconds - 1;
+        }
+      });
+    }, 1000);
   };
 
   useEffect(() => {
@@ -74,35 +105,10 @@ const GameScreen = ({ route, navigation }) => {
         console.log(error);
       }
     };
-    fetchData();
-    const timer = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds === 0) {
-          if (minutes === 0) {
-            setSetOn((prevSetOn) => {
-              const newSetOn = prevSetOn + 1;
-              if (newSetOn > sets) {
-                setModalend(true);
-              } else {
-                setMinutes(entretiempo);
-                setSeconds(0);
-                setModalBreak(true); 
-              }
-              return newSetOn;
-            });
-            return 0
-          } else {
-            setMinutes((prevMinutes) => prevMinutes - 1);
-            return 59;
-          }
-        } else {
-          return prevSeconds - 1;
-        }
-      });
-    }, 1000);
-  
-    return () => clearInterval(timer);
-  }, []);; 
+    fetchData();   
+    startMainTimer();
+    return () => clearInterval(timerRef.current);
+  }, [minutes, sets, entretiempo]);
 
   useEffect(() => {
     let breakTimer;
