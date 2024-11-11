@@ -76,10 +76,7 @@ const GameScreen = ({ route, navigation }) => {
     setSecondsTime(0)
     setMinutesTime(0)
     setTimeModal(true)
-  }
-  
-  const cloneTimeModal = () => {
-    setTimeModal(false)
+    startTimeCounter();
   }
 
   const handlePointSelection = (pointType) => {
@@ -150,17 +147,53 @@ const GameScreen = ({ route, navigation }) => {
   }, [modalBreak, minutesBreak]);
   
 
-  const renderTimeModal = () => {
-    if(timeModal){
-      return(
-        <Modal visible={timeModal} transparent={true} animationType="slide">
-          <View>
+  // Añadir referencia para el temporizador del Time Modal
+const timerTimeRef = useRef(null);
 
+// Función para iniciar el contador ascendente
+const startTimeCounter = () => {
+  timerTimeRef.current = setInterval(() => {
+    setSecondsTime((prevSeconds) => {
+      if (prevSeconds === 59) {
+        setMinutesTime((prevMinutes) => prevMinutes + 1);
+        return 0;
+      } else {
+        return prevSeconds + 1;
+      }
+    });
+  }, 1000);
+};
+
+const closeTimeModal = () => {
+  clearInterval(timerTimeRef.current);
+  setTimeModal(false);
+  setSecondsTime(0);
+  setMinutesTime(0);
+};
+
+const renderTimeModal = () => {
+  if (timeModal) {
+    return (
+      <Modal visible={timeModal} transparent={true} animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Contador de Tiempo</Text>
+            <Text style={styles.modalText}>
+              {`${minutesTime < 10 ? '0' : ''}${minutesTime}:${secondsTime < 10 ? '0' : ''}${secondsTime}`}
+            </Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={closeTimeModal}
+            >
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      )
-    }
+        </View>
+      </Modal>
+    );
   }
+};
+
 
   const renderBreakModal = () =>{
     if (modalBreak) {
@@ -373,13 +406,16 @@ const GameScreen = ({ route, navigation }) => {
       </View>
 
         <View style={styles.actionButtons}>
-          <TouchableOpacity style={styles.timeButton}>
+          <TouchableOpacity 
+            style={styles.timeButton}
+            onPress={openTimeModal}
+          >
             <Text style={styles.timeButtonText}>Pedir tiempo</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.endButton}
-            onPress={openEndModal}
-            >
+              style={styles.endButton}
+              onPress={openEndModal}
+          >
             <Text style={styles.endButtonText}>Finalizar Partido</Text>
           </TouchableOpacity>
         </View>
@@ -408,6 +444,14 @@ const GameScreen = ({ route, navigation }) => {
         onRequestClose={closeModal}
       >
         <View style={styles.modalContainer}>{renderEndModal()}</View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalEnd}
+        onRequestClose={closeTimeModal}
+      >
+        <View style={styles.modalContainer}>{renderTimeModal()}</View>
       </Modal>
     </View>
   );
