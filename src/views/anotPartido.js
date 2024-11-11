@@ -21,7 +21,8 @@ const GameScreen = ({ route, navigation }) => {
   const [setOn, setSetOn] = useState(1)
   const [modalEnd, setModalend] = useState(false)
   const [modalBreak, setModalBreak] = useState(false)
-
+  const [secondsBreak, setSecondsBreak] = useState(0)
+  const [minutesBreak, setMinutesBreak] = useState(entretiempo)
   const timerRef = useRef(null); 
 
   const openModal = (type, id) => {
@@ -114,13 +115,13 @@ const GameScreen = ({ route, navigation }) => {
     let breakTimer;
     if (modalBreak) {
       breakTimer = setInterval(() => {
-        setSeconds((prevSeconds) => {
+        setSecondsBreak((prevSeconds) => {
           if (prevSeconds === 0) {
             if (minutes === 0) {
               clearInterval(breakTimer);
               closeModalBreak();
             } else {
-              setMinutes((prev) => prev - 1);
+              setMinutesBreak((prev) => prev - 1);
               return 59;
             }
           } else {
@@ -132,14 +133,28 @@ const GameScreen = ({ route, navigation }) => {
     return () => clearInterval(breakTimer);
   }, [modalBreak]);
 
+  const renderBreakModal = () =>{
+    if (modalBreak) {
+      return (
+        <Modal visible={modalBreak} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Entretiempo</Text>
+              <Text style={styles.modalText}>{`${minutesBreak < 10 ? '0' : ''}${minutesBreak}:${secondsBreak < 10 ? '0' : ''}${secondsBreak}`}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={closeModalBreak}
+              >
+                <Text style={styles.closeButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      );
+    }
+  }
 
-  const renderModalContent = () => {
-    const OpponentButton = () => (
-      <TouchableOpacity style={styles.opponentButton} onPress={opModal}>
-        <Text style={styles.opponentButtonText}>Equipo Oponente</Text>
-      </TouchableOpacity>
-    );
-    
+  const renderEndModal = () => {
     if (modalEnd) {
       return (
         <Modal visible={modalEnd} transparent={true} animationType="slide">
@@ -160,25 +175,15 @@ const GameScreen = ({ route, navigation }) => {
         </Modal>
       );
     }
+  }
 
-    if (modalBreak) {
-      return (
-        <Modal visible={modalBreak} transparent={true} animationType="slide">
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>Entretiempo</Text>
-              <Text style={styles.modalText}>{`${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={closeModalBreak}
-              >
-                <Text style={styles.closeButtonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      );
-    }
+  const renderModalContent = () => {
+    const OpponentButton = () => (
+      <TouchableOpacity style={styles.opponentButton} onPress={opModal}>
+        <Text style={styles.opponentButtonText}>Equipo Oponente</Text>
+      </TouchableOpacity>
+    );
+    
     switch (modalType) {
       case 'Punto':
         return (
@@ -355,6 +360,22 @@ const GameScreen = ({ route, navigation }) => {
         onRequestClose={closeModal}
       >
         <View style={styles.modalContainer}>{renderModalContent()}</View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalBreak}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>{renderBreakModal()}</View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalEnd}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalContainer}>{renderEndModal()}</View>
       </Modal>
     </View>
   );
