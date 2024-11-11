@@ -35,7 +35,6 @@ const ConfigAnot = ({ navigation }) => {
       Number(entretiempo) >= 0 &&
       Number(tiempos) >= 0 &&
       Number(duracion) !== 1 &&
-      Number(entretiempo) !== 1 &&
       Number(tiempos) !== 1
     ) {
       const partido = Partidos[selectedPartidoIndex - 1];

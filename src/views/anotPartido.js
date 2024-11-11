@@ -16,13 +16,16 @@ const GameScreen = ({ route, navigation }) => {
   const [selectedPoint, setSelectedPoint] = useState('');
   const [notes, setNotes] = useState([])
   const [seconds, setSeconds] = useState(0)
-  const [minutes, setMinutes] = useState(duracion/entretiempo)
+  const [minutes, setMinutes] = useState(duracion/tiempos)
   const [sets, setSets] = useState(tiempos)
   const [setOn, setSetOn] = useState(1)
   const [modalEnd, setModalend] = useState(false)
   const [modalBreak, setModalBreak] = useState(false)
   const [secondsBreak, setSecondsBreak] = useState(0)
   const [minutesBreak, setMinutesBreak] = useState(entretiempo)
+  const [secondsTime, setSecondsTime] = useState(0)
+  const [minutesTime, setMinutesTime] = useState(0)
+  const [timeModal, setTimeModal] = useState(false)
   const timerRef = useRef(null); 
 
   const openModal = (type, id) => {
@@ -65,6 +68,20 @@ const GameScreen = ({ route, navigation }) => {
     startMainTimer(); // Reinicia el temporizador principal al cerrar el modal de descanso
   };
 
+  const openEndModal = () => {
+    setModalend(true)
+  }
+
+  const openTimeModal = () => {
+    setSecondsTime(0)
+    setMinutesTime(0)
+    setTimeModal(true)
+  }
+  
+  const cloneTimeModal = () => {
+    setTimeModal(false)
+  }
+
   const handlePointSelection = (pointType) => {
     setSelectedPoint(pointType);
   };
@@ -79,10 +96,8 @@ const GameScreen = ({ route, navigation }) => {
             if (newSetOn > sets) {
               setModalend(true);
             } else {
-              setMinutes(entretiempo);
-              setSeconds(0);
               setModalBreak(true);
-              clearInterval(timerRef.current); // Pausa el temporizador principal
+              clearInterval(timerRef.current); 
             }
             return newSetOn;
           });
@@ -117,9 +132,10 @@ const GameScreen = ({ route, navigation }) => {
       breakTimer = setInterval(() => {
         setSecondsBreak((prevSeconds) => {
           if (prevSeconds === 0) {
-            if (minutes === 0) {
+            if (minutesBreak === 0) {
               clearInterval(breakTimer);
               closeModalBreak();
+              return 0;
             } else {
               setMinutesBreak((prev) => prev - 1);
               return 59;
@@ -131,7 +147,20 @@ const GameScreen = ({ route, navigation }) => {
       }, 1000);
     }
     return () => clearInterval(breakTimer);
-  }, [modalBreak]);
+  }, [modalBreak, minutesBreak]);
+  
+
+  const renderTimeModal = () => {
+    if(timeModal){
+      return(
+        <Modal visible={timeModal} transparent={true} animationType="slide">
+          <View>
+
+          </View>
+        </Modal>
+      )
+    }
+  }
 
   const renderBreakModal = () =>{
     if (modalBreak) {
@@ -347,7 +376,10 @@ const GameScreen = ({ route, navigation }) => {
           <TouchableOpacity style={styles.timeButton}>
             <Text style={styles.timeButtonText}>Pedir tiempo</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.endButton}>
+          <TouchableOpacity 
+            style={styles.endButton}
+            onPress={openEndModal}
+            >
             <Text style={styles.endButtonText}>Finalizar Partido</Text>
           </TouchableOpacity>
         </View>
