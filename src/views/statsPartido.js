@@ -18,6 +18,7 @@ const App = ({ route, navigation }) => {
     const [equipo1, setEquipo1] = useState([])
     const [equipo2, setEquipo2] = useState([])
     const { idequipo1, idequipo2, id_partido } = route.params 
+
     const fillImage = (players) => {
         players.forEach(player => {
             if(player.foto == null){
@@ -60,31 +61,28 @@ const App = ({ route, navigation }) => {
     })
 
     const stats = [
-        { labels: ["Jan", "Feb"], datasets: [{ data: [20, 15] }] },
-        { labels: ["Mar", "Apr"], datasets: [{ data: [30, 25] }] },
-        { labels: ["May", "Jun"], datasets: [{ data: [10, 5] }] },
-        { labels: ["Jul", "Aug"], datasets: [{ data: [40, 35] }] },
+        { label: "Puntos", team1: 12, team2: 22 },
+        { label: "Rebotes", team1: 15, team2: 18 },
+        { label: "Asistencias", team1: 10, team2: 12 },
+        { label: "Robos", team1: 8, team2: 6 },
     ];
 
     const chartConfig = {
-        backgroundGradientFrom: "#ffffff00", // Fondo transparente
-        backgroundGradientTo: "#ffffff00",   
-        color: () => `rgba(234, 181, 25, 1)`,
-        strokeWidth: 2,
-        barPercentage: 0.4,
+        backgroundGradientFrom: "#FAD77F",
+        backgroundGradientTo: "#FAD77F",   
+        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+        barPercentage: 0.6,
         useShadowColorFromDataset: false,
         decimalPlaces: 0,
-        propsForBackgroundLines: {
-            stroke: 'black',
-            strokeWidth: 1,
+        propsForDots: {
+            r: "6",
+            strokeWidth: "2",
+            stroke: "#ffa726"
         },
-        propsForLabels: {
-            fontSize: 12,
-            fontWeight: 'bold',
-            fill: 'black',
-        },
-        showValuesOnTopOfBars: true, 
-        horizontalLabelRotation: 0, 
+        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+        style: {
+            borderRadius: 16
+        }
     };
 
     const initialPlayerCount = 4;
@@ -117,18 +115,26 @@ const App = ({ route, navigation }) => {
                     </View>
                     <View style={styles.chartContainer}>
                         {stats.map((stat, index) => (
-                            <BarChart
-                                key={index}
-                                data={stat}
-                                width={widthScreen / 2.2}
-                                height={100}
-                                chartConfig={chartConfig}
-                                style={styles.charts}
-                                withHorizontalLabels={false}
-                                fromZero={true}
-                                withVerticalLines={true} 
-                                withHorizontalLines={true}
-                            />
+                            <View key={index} style={styles.chartItem}>
+                                <Text style={styles.chartLabel}>{stat.label}</Text>
+                                <BarChart
+                                    data={{
+                                        labels: ['Equipo 1', 'Equipo 2'],
+                                        datasets: [
+                                            { data: [stat.team1, stat.team2] },
+                                        ],
+                                    }}
+                                    width={widthScreen * 0.4}
+                                    height={180}
+                                    chartConfig={chartConfig}
+                                    style={styles.charts}
+                                    fromZero={true}
+                                    withVerticalLines={false}
+                                    withHorizontalLines={false}
+                                    withInnerLines={false}
+                                    withOuterLines={false}
+                                />
+                            </View>
                         ))}
                     </View>
                 </View>
@@ -239,7 +245,20 @@ const styles = StyleSheet.create({
     chartContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        marginHorizontal: 10,
+    },
+    chartItem: {
+        marginVertical: 10,
+        alignItems: 'center',
+    },
+    chartLabel: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    charts: {
+        borderRadius: 10,
     },
     button: {
         backgroundColor: '#007BFF',

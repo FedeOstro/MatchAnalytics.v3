@@ -145,12 +145,9 @@ const GameScreen = ({ route, navigation }) => {
     }
     return () => clearInterval(breakTimer);
   }, [modalBreak, minutesBreak]);
-  
 
-  // Añadir referencia para el temporizador del Time Modal
 const timerTimeRef = useRef(null);
 
-// Función para iniciar el contador ascendente
 const startTimeCounter = () => {
   timerTimeRef.current = setInterval(() => {
     setSecondsTime((prevSeconds) => {
@@ -404,7 +401,6 @@ const renderTimeModal = () => {
     </TouchableOpacity>
       ))}
       </View>
-
         <View style={styles.actionButtons}>
           <TouchableOpacity 
             style={styles.timeButton}
@@ -420,7 +416,6 @@ const renderTimeModal = () => {
           </TouchableOpacity>
         </View>
       </View>
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -448,7 +443,7 @@ const renderTimeModal = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalEnd}
+        visible={timeModal}
         onRequestClose={closeTimeModal}
       >
         <View style={styles.modalContainer}>{renderTimeModal()}</View>
