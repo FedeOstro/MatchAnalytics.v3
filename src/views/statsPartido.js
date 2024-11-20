@@ -7,7 +7,8 @@ import { BarChart } from "react-native-chart-kit";
 import { getAllPlayers } from '../../lib/fetchplayers'
 import { fetchPartidoById } from '../../lib/fetchmatch'
 import { fetchEquipoById } from '../../lib/fetchteams'
-
+import { fetchNotesXMatch } from '../../lib/fetchstats'
+import { notesXMatch } from '../../lib/fetchnotes'
 const { width: widthScreen } = Dimensions.get('window');
 const { height: heightScreen } = Dimensions.get('window');
 
@@ -18,6 +19,7 @@ const App = ({ route, navigation }) => {
     const [equipo1, setEquipo1] = useState([])
     const [equipo2, setEquipo2] = useState([])
     const { idequipo1, idequipo2, id_partido } = route.params 
+    const [stat, setStats] = useState([])
 
     const fillImage = (players) => {
         players.forEach(player => {
@@ -53,9 +55,14 @@ const App = ({ route, navigation }) => {
                 setEquipo1(equipo1)
                 const equipo2 = await fetchEquipoById(idequipo2)
                 setEquipo1(equipo2)
-            }catch(error){
-                console.log(error)
-            }
+                const notes = await notesXMatch(partido[0].id_deporte);
+                const statsResults = await Promise.all(
+                    notes.map(note => fetchNotesXMatch(partido[0].id_partido, note.id_accion))
+                );
+                setStats(statsResults);
+                }catch(error){
+                    console.log(error)
+                }
         }
         fetchData()
     })
