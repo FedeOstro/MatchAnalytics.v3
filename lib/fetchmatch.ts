@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm';
 import { supabase } from './supabase'
 
 export const fetch3partidos = async () => {
@@ -29,14 +30,22 @@ export const fetchPartidoById = async (id: Int8Array) => {
 
 export const updateMatch = async (id_partido: Int8Array, duration: Int8Array, pEqLocal: Int8Array, pEqOf: Int8Array) => {
   await supabase.from('partido').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
+  return
 }
 
-export const insertMatch = async (equipo, oponente, fecha, name, deporte) => {
+export const insertMatch = async (equipo, oponente, fecha, nombre, deporte) => {
+  console.log("Hola papa")
+  console.log(equipo)
+  console.log(oponente)
+  console.log(fecha)
+  console.log(nombre)
+  console.log(deporte)
   await supabase.from('partido').insert({
     fecha: fecha,
     idequipo1: equipo,
     idequipo2: oponente,
-    name: name,
+    name: nombre,
     id_deporte: deporte,
   })
+  return
 }

@@ -31,3 +31,13 @@ export const insertTeam = async (nombre, foto, id_equipo, id_usuario) => {
     return(data[0].id_equipo)
   }
 }
+
+export const fetchSport = async (equipo) => {
+  const { data, error } = await supabase.from('equipo').select('*').eq('nombre', equipo)
+  if(error){
+    console.log(error)
+    return error
+  } else{
+    return data
+  }
+}

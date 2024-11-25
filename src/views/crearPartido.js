@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet, Dimensions, Alert, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, Dimensions, Alert, TouchableOpacity, Platform, Vibration } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Header from '../components/Header';
 import { insertMatch } from '../../lib/fetchmatch';
 import { eq } from 'drizzle-orm';
-import { fetchAllEquipos } from '../../lib/fetchteams';
+import { fetchAllEquipos, fetchSport, insertTeam, fetchEquipoById } from '../../lib/fetchteams';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigPartido = ({ navigation }) => {
@@ -20,16 +21,11 @@ const ConfigPartido = ({ navigation }) => {
   const [equipos, setEquipos] = useState([])
 
   useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
-        if (status !== 'granted') {
-          alert('Se necesita permiso para acceder a las fotos.');
-        }
-      }
-      const equip = await fetchAllpartidos()
-      setEquipos(equip)
-    })();
+    const fetchdata = async () => {
+      const teams = await fetchAllEquipos()
+      setEquipos(teams)
+    }
+    fetchdata()
   }, []);
 
   const handleImagePick = async () => {
@@ -55,7 +51,7 @@ const ConfigPartido = ({ navigation }) => {
     }
   };
 
-  const handleButtonPress = () => {
+  const handleButtonPress = async () => {
     if (equipo && oponente && dia && mes && ano) {
       const diaNum = parseInt(dia, 10);
       const mesNum = parseInt(mes, 10);
@@ -86,7 +82,17 @@ const ConfigPartido = ({ navigation }) => {
       }
 
       const fecha = `${dia.padStart(2, '0')}/${mes.padStart(2, '0')}/${ano.padStart(2, '0')}`;
-      handleInsert(equipo, oponente, fecha, imagenOponente)
+      const deporte = await fetchSport(equipo)
+      const name = equipo + " vs " + oponente
+      console.log(name)
+      console.log(deporte[0].id_deporte)
+      const foto = fillImage(deporte[0].id_equipo)
+      const user = await AsyncStorage.getItem('user')
+      const userParsed = JSON.parse(user)
+      const idusuario = userParsed.id;
+      console.log("Hola padre" + idusuario)
+      const idOp = await insertTeam(oponente, foto, deporte[0].id_deporte, idusuario)
+      const data = await insertMatch(deporte[0].id_equipo, idOp, fecha, name, deporte[0].id_deporte)
       Vibration.vibrate(500)
       Alert.alert(
         'Partido configurado',
@@ -104,8 +110,27 @@ const ConfigPartido = ({ navigation }) => {
     }
   };
 
-  const handleInsert = async (equipo, oponente, fecha, imagenOponente) => {
-    
+  const fillImage = async (data) => {
+    let foto = "" 
+    try {
+        switch (data) {
+        case 1:
+          foto = '../images/football.png';
+          break;
+        case 2:
+          foto = '../images/cesto.png';
+          break;
+        case 3:
+          foto = '../images/basque.png';
+          break;
+        default:
+          console.log("Error setup foto");
+          break;
+        }
+        return foto
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -127,9 +152,9 @@ const ConfigPartido = ({ navigation }) => {
               style={styles.picker}
             >
               <Picker.Item label="Selecciona equipo" value="" />
-              <Picker.Item label="Equipo 1" value="Equipo 1" />
-              <Picker.Item label="Equipo 2" value="Equipo 2" />
-              <Picker.Item label="Equipo 3" value="Equipo 3" />
+               {equipos.map((equipo) => (
+                  <Picker.Item key={equipo.id} label={equipo.nombre} value={equipo.nombre} />
+              ))}
             </Picker>
           </View>
           <View style={styles.inputGroup}>

@@ -75,7 +75,11 @@ const AllEquipo = ({ navigation }) => {
         <View style={styles.equiposContainer}>
           {equipos.map((equipo, index) => (
             <View key={index} style={styles.equipoWrapper}>
-              <Equipo nombre={equipo.nombre} press={equipo.press} deporte={equipo.deporte} imageSource={getImageSource(equipo.foto)}/>
+              <Equipo nombre={equipo.nombre} 
+              press={() => navigation.navigate('verEquipo', { idEquipo: equipo.id_equipo })}  
+              deporte={equipo.deporte} 
+              imageSource={getImageSource(equipo.foto)}
+              />
             </View>
           ))}
         </View>
