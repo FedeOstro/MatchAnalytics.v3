@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { supabase } from './supabase'
+import Equipo from '../src/components/Equipo';
 
 export const fetch3partidos = async () => {
     const { data: equiposData, error } = await supabase.from('partido').select('*').limit(3);
@@ -21,6 +22,15 @@ export const fetchAllpartidos = async () => {
 
 export const fetchPartidoById = async (id: Int8Array) => {
   const {data, error } = await supabase.from('partido').select('*').eq('id_partido', id)
+  if(error){
+    console.log(error)
+  }else{
+    return data
+  }
+}
+
+export const fetchPartodoByTeam = async (Equipo) => {
+  const { data, error } = await supabase.from('partido').select('*').eq('idequipo1', Equipo)
   if(error){
     console.log(error)
   }else{

@@ -59,6 +59,7 @@ const App = ({ route, navigation }) => {
                 const statsResults = await Promise.all(
                     notes.map(note => fetchNotesXMatch(partido[0].id_partido, note.id_accion))
                 );
+                console.log(statsResults)
                 setStats(statsResults);
                 }catch(error){
                     console.log(error)
@@ -67,12 +68,6 @@ const App = ({ route, navigation }) => {
         fetchData()
     })
 
-    const stats = [
-        { label: "Puntos", team1: 12, team2: 22 },
-        { label: "Rebotes", team1: 15, team2: 18 },
-        { label: "Asistencias", team1: 10, team2: 12 },
-        { label: "Robos", team1: 8, team2: 6 },
-    ];
 
     const chartConfig = {
         backgroundGradientFrom: "#FAD77F",
@@ -121,7 +116,7 @@ const App = ({ route, navigation }) => {
                         <Image source={getImageSource(equipo2.foto)} style={styles.log} />
                     </View>
                     <View style={styles.chartContainer}>
-                        {stats.map((stat, index) => (
+                        {stat.map((stat, index) => (
                             <View key={index} style={styles.chartItem}>
                                 <Text style={styles.chartLabel}>{stat.label}</Text>
                                 <BarChart

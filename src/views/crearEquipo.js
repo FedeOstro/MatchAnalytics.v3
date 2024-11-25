@@ -103,6 +103,7 @@ const CrearEquipo = ({ navigation }) => {
     const idusuario = userParsed.id;
     if (imagen === null) {
       const newimagen = await fillImage(deporte);
+      console.log(newimagen)
       const id = await insertTeam(equipo, newimagen, deporte, idusuario);
       await insertPlayers(id, jugadores)
     } else {

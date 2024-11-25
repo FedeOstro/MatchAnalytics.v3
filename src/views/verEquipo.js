@@ -4,7 +4,7 @@ import PlayerItem from '../components/Jugadores';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
 import { supabase } from '../../lib/supabase'
-import { fetchAllpartidos } from '../../lib/fetchmatch'
+import { fetchPartodoByTeam } from '../../lib/fetchmatch'
 import { getAllPlayers } from '../../lib/fetchplayers'
 const { height: screenHeight } = Dimensions.get('window');
 const { width: screenWidth } = Dimensions.get('window');
@@ -28,7 +28,7 @@ const TeamScreen = ({ route, navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
           try{
-            const data2 = await fetchAllpartidos()
+            const data2 = await fetchPartodoByTeam(idEquipo)
             setPartidos(data2)
             const play = await getAllPlayers(idEquipo)
             const players = fillImage(play)
@@ -41,7 +41,7 @@ const TeamScreen = ({ route, navigation }) => {
       }, []);
 
 
-    const initialPartidosCount = 3;
+    const initialPartidosCount = 3;     
     const initialPlayerCount = 4;
     const partidosToShow = showAllPartidos ? partidos : partidos.slice(0, initialPartidosCount);
     const playersToShow = showAllPlayers ? players : players.slice(0, initialPlayerCount);
