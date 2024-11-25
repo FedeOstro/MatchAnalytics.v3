@@ -26,6 +26,8 @@ const GameScreen = ({ route, navigation }) => {
   const [secondsTime, setSecondsTime] = useState(0)
   const [minutesTime, setMinutesTime] = useState(0)
   const [timeModal, setTimeModal] = useState(false)
+  const [puntosEq1, setpuntosEq1] = useState(0)
+  const [puntosEq2, setpuntosEq2] = useState(0)
   const timerRef = useRef(null); 
 
   const openModal = (type, id) => {
@@ -35,6 +37,7 @@ const GameScreen = ({ route, navigation }) => {
   };
  
   const closeModal = async () => {
+    let special = false
     if(selectedPoint === 'Triple'){
       special = true
       addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)

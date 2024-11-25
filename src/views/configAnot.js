@@ -37,7 +37,9 @@ const ConfigAnot = ({ navigation }) => {
       Number(duracion) !== 1 &&
       Number(tiempos) !== 1
     ) {
-      const partido = Partidos[selectedPartidoIndex - 1];
+      const partido = Partidos[selectedPartidoIndex - 2];
+      console.log(selectedPartidoIndex)
+    
       navigation.navigate('anotarPartido', {
         partido: partido,
         duracion: duracion,
@@ -71,7 +73,7 @@ const ConfigAnot = ({ navigation }) => {
               <Picker.Item label="Selecciona equipo" value={undefined} />
               {Partidos.map((partido, index) => (
                 <Picker.Item 
-                  key={index+1} 
+                  key={index} 
                   label={partido.name} 
                   value={partido.id_partido}
                 />
