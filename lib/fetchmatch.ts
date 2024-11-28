@@ -1,8 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { supabase } from './supabase'
 import Equipo from '../src/components/Equipo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const fetch3partidos = async () => {
+  const storedUser = await AsyncStorage.getItem('user');
+  const parsedUser = JSON.parse(storedUser); 
     const { data: equiposData, error } = await supabase.from('partido').select('*').limit(3);
     if (error) {
       console.log(error);
@@ -12,6 +16,8 @@ export const fetch3partidos = async () => {
 }
 
 export const fetchAllpartidos = async () => {
+  const storedUser = await AsyncStorage.getItem('user');
+        const parsedUser = JSON.parse(storedUser); 
   const {data, error } = await supabase.from('partido').select('*')
   if(error){
     console.log(error)
