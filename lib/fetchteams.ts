@@ -1,7 +1,11 @@
 import { supabase } from './supabase'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export const fetchAllEquipos = async () => {
-    const { data: equiposData, error } = await supabase.from('equipo').select('*');
+  const storedUser = await AsyncStorage.getItem('user');
+  const parsedUser = JSON.parse(storedUser);  
+  const { data: equiposData, error } = await supabase.from('equipo').select('*').eq('id_usuario', parsedUser.id);
     if (error) {
       console.log(error);
     } else {

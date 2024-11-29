@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RectButton } from 'react-native-gesture-handler';
 const { width: screenWidth } = Dimensions.get('window');
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const HomeScreen = ({navigation}) => {
@@ -85,22 +86,28 @@ const HomeScreen = ({navigation}) => {
     }
   };
 
-  useEffect(() => {  
-    const fetchData = async () => {
-      try{
-        const storedUser = await AsyncStorage.getItem('user');
-        const parsedUser = JSON.parse(storedUser); 
-        setUser(parsedUser)
-        const data = await fetchAllEquipos()
-        fillImage(data)
-        const data2 = await fetch3partidos()
-        fillteams(data2)
-      }catch(error){
-        console.log(error)
-      }
-    }
-    fetchData()
-  },[]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const storedUser = await AsyncStorage.getItem('user');
+          const parsedUser = JSON.parse(storedUser); 
+          setUser(parsedUser);
+          const data = await fetchAllEquipos();
+          fillImage(data);
+          const data2 = await fetch3partidos();
+          fillteams(data2);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+  
+      fetchData();
+      return () => {
+        console.log('Leaving view');
+      };
+    }, [])
+  );
 
   return (
       <View style={styles.container}>

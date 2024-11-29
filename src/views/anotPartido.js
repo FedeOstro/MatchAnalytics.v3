@@ -26,8 +26,9 @@ const GameScreen = ({ route, navigation }) => {
   const [secondsTime, setSecondsTime] = useState(0)
   const [minutesTime, setMinutesTime] = useState(0)
   const [timeModal, setTimeModal] = useState(false)
-  const [puntosEq1, setpuntosEq1] = useState(0)
-  const [puntosEq2, setpuntosEq2] = useState(0)
+  const [puntosEq1, setPunto] = useState(0)
+  const [puntosEq2, setOpPunto] = useState(0)
+  
   const timerRef = useRef(null); 
 
   const openModal = (type, id) => {
@@ -43,6 +44,15 @@ const GameScreen = ({ route, navigation }) => {
       addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
     }
     addAnot(modalId, playerNumber, partido.id_partido, partido.idequipo1, special)
+    if (modalId === 1) {
+      setPunto(prev => prev + 1);
+    } else if (modalId === 12) {
+      if (special) {
+        setPunto(prev => prev + 3);
+      } else {
+        setPunto(prev => prev + 2);
+      }
+    }
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
@@ -58,6 +68,11 @@ const GameScreen = ({ route, navigation }) => {
 
   const opModal = async () => {
     addOpAnot(modalId, partido.idequipo2, partido.id_partido)
+    if (modalId === 1) {
+      setOpPunto(prev => prev + 1);
+    } else if (modalId === 12) {
+      setOpPunto(prev => prev + 2);
+    }
     setModalVisible(false);
     setPlayerNumber('');
     setPlayerNumber2('');
@@ -171,6 +186,23 @@ const closeTimeModal = () => {
   setMinutesTime(0);
 };
 
+const handleEndMatch = async () => {
+  try {
+    await updateMatch(partido.id_partido, duracion, puntosEq1, puntosEq2);
+    clearInterval(timerRef.current);
+    console.log('Match ended with stats:', {
+      puntos_equipo1: puntosEq1,
+      puntos_equipo2: puntosEq2,
+      sets_jugados: setOn - 1
+    });
+    setModalend(false);
+    navigation.navigate('Home');
+  } catch (error) {
+    console.error('Error ending match:', error);
+  }
+};
+
+
 const renderTimeModal = () => {
   if (timeModal) {
     return (
@@ -225,10 +257,7 @@ const renderTimeModal = () => {
               <Text style={styles.modalText}>¡Partido finalizado!</Text>
               <TouchableOpacity
                 style={styles.acceptButton}
-                onPress={() => {
-                  setModalend(false);
-                  navigation.navigate('Home');
-                }}
+                onPress={handleEndMatch}
               >
                 <Text style={styles.acceptButtonText}>Aceptar</Text>
               </TouchableOpacity>

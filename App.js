@@ -12,8 +12,6 @@ import AllPartidos from './src/views/allPartidos';
 import crearEquipo from './src/views/crearEquipo';
 import crearPartido from './src/views/crearPartido';
 import login from './src/views/login';
-import statsJugador from './src/views/statsJugador';
-import startJugadorxPartido from './src/views/statsJugadorxPartido';
 import statsPartido from './src/views/statsPartido';
 import ConfigAnot from './src/views/configAnot';
 
@@ -80,14 +78,6 @@ function MyStack() {
               component={crearPartido}
             />
             <Stack.Screen
-              name="statsJugador"
-              component={statsJugador}
-            />
-            <Stack.Screen
-              name="startJugadorxPartido"
-              component={startJugadorxPartido}
-            />
-            <Stack.Screen
               name="statsPartido"
               component={statsPartido}
             />
@@ -129,14 +119,6 @@ function MyStack() {
             <Stack.Screen
               name="crearPartido"
               component={crearPartido}
-            />
-            <Stack.Screen
-              name="statsJugador"
-              component={statsJugador}
-            />
-            <Stack.Screen
-              name="startJugadorxPartido"
-              component={startJugadorxPartido}
             />
             <Stack.Screen
               name="statsPartido"

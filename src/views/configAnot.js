@@ -2,50 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, Dimensions, Alert, Image, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../components/Header';
-import {fetchAllpartidos} from '../../lib/fetchmatch'
+import { fetchAllpartidos } from '../../lib/fetchmatch';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const ConfigAnot = ({ navigation }) => {
-  const [selectedPartidoIndex, setPartidoIndex] = useState(undefined);
+  const [selectedPartidoIndex, setPartidoIndex] = useState(null);
   const [duracion, setDuracion] = useState('');
   const [entretiempo, setEntretiempo] = useState('');
   const [tiempos, setTiempos] = useState('');
-  const [Partidos, setPartidos] = useState([])
+  const [Partidos, setPartidos] = useState([]);
 
-  useEffect(() =>{
+  useEffect(() => {
     const fetchData = async () => {
-      try{
-        const data = await fetchAllpartidos()
-        setPartidos(data)
-      }catch(error){
-        console.log(error)
+      try {
+        const data = await fetchAllpartidos();
+        setPartidos(data);
+      } catch (error) {
+        console.log(error);
       }
-    }
-    fetchData()
-  })
+    };
+    fetchData();
+  }, []); // Solo se ejecuta una vez
 
   const handleButtonPress = () => {
     if (
-      selectedPartidoIndex !== undefined &&
+      selectedPartidoIndex !== null &&
       entretiempo !== '' &&
       tiempos !== '' &&
       duracion !== '' &&
-      Number(duracion) >= 1 &&
+      Number(duracion) > 1 &&
       Number(entretiempo) >= 0 &&
-      Number(tiempos) >= 0 &&
-      Number(duracion) !== 1 &&
-      Number(tiempos) !== 1
+      Number(tiempos) > 0
     ) {
-      const partido = Partidos[selectedPartidoIndex - 2];
-      console.log(selectedPartidoIndex)
-    
-      navigation.navigate('anotarPartido', {
-        partido: partido,
-        duracion: duracion,
-        entretiempo: entretiempo,
-        tiempos: tiempos,
-      });
+      const partido = Partidos.find((p) => p.id_partido === Number(selectedPartidoIndex));
+
+      if (partido) {
+        navigation.navigate('anotarPartido', {
+          partido: partido,
+          duracion: duracion,
+          entretiempo: entretiempo,
+          tiempos: tiempos,
+        });
+      } else {
+        Alert.alert('Error', 'No se pudo encontrar el partido seleccionado.');
+      }
     } else {
       Alert.alert(
         'Advertencia',
@@ -53,6 +54,7 @@ const ConfigAnot = ({ navigation }) => {
       );
     }
   };
+
   return (
     <View style={styles.container}>
       <Header />
@@ -67,16 +69,14 @@ const ConfigAnot = ({ navigation }) => {
           <View style={styles.inputGroup}>
             <Picker
               selectedValue={selectedPartidoIndex}
-              onValueChange={(itemValue) => {setPartidoIndex(itemValue);console.log(itemValue)}}
+              onValueChange={(itemValue) => {
+                setPartidoIndex(itemValue);
+              }}
               style={styles.picker}
             >
-              <Picker.Item label="Selecciona equipo" value={undefined} />
-              {Partidos.map((partido, index) => (
-                <Picker.Item 
-                  key={index} 
-                  label={partido.name} 
-                  value={partido.id_partido}
-                />
+              <Picker.Item label="Selecciona equipo" value={null} />
+              {Partidos.map((partido) => (
+                <Picker.Item key={partido.id_partido} label={partido.name} value={partido.id_partido.toString()} />
               ))}
             </Picker>
           </View>

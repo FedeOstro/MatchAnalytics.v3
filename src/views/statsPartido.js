@@ -19,7 +19,8 @@ const App = ({ route, navigation }) => {
     const [equipo1, setEquipo1] = useState([])
     const [equipo2, setEquipo2] = useState([])
     const { idequipo1, idequipo2, id_partido } = route.params 
-    const [stat, setStats] = useState([])
+    const [stat, setStats] = useState({});
+
 
     const fillImage = (players) => {
         players.forEach(player => {
@@ -56,10 +57,14 @@ const App = ({ route, navigation }) => {
                 const equipo2 = await fetchEquipoById(idequipo2)
                 setEquipo1(equipo2)
                 const notes = await notesXMatch(partido[0].id_deporte);
-                const statsResults = await Promise.all(
-                    notes.map(note => fetchNotesXMatch(partido[0].id_partido, note.id_accion))
-                );
-                console.log(statsResults)
+                const statsResults = {};
+                for (const note of notes) {
+                const count = await fetchNotesXMatch(partido[0].id_partido, note.id_accion);
+                statsResults[note.id_accion] = {
+                    count,
+                    description: note.descripcion, // Guardamos la descripción de la acción.
+                };
+                }
                 setStats(statsResults);
                 }catch(error){
                     console.log(error)
@@ -95,10 +100,18 @@ const App = ({ route, navigation }) => {
             <View style={styles.head}>
                 <Header />
                 <View style={styles.topBar}>
-                    <Text style={styles.time}>20:00 mins {'\n'} Tiempos 2</Text>
-                    <Text style={styles.period}>28 / 4</Text>
-                    <Text style={styles.match}>Equipo 1 vs Sacachispas</Text>
-                </View>
+                    {match[0] && typeof match[0].duracion !== null && typeof match[0].puntosEqLocal !== null && typeof match[0].puntosEqOf !== null? (
+                <>
+                    <Text style={styles.time}> {match[0].duracion} mins {'\n'} Tiempos 2</Text>
+                    <Text style={styles.period}>  {match[0].puntosEqLocal} / {match[0].puntosEqOf}</Text>
+                    <Text style={styles.match}>{match[0].name}</Text>
+                </>
+                ) : (
+                    <Text style={styles.message}>Todavía no se han cargado los datos del partido.</Text>
+                )}
+            </View>
+
+
                 <View style={styles.header2}>
                     <Image source={require('../images/barStats.png')} style={styles.bar} />
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -116,27 +129,29 @@ const App = ({ route, navigation }) => {
                         <Image source={getImageSource(equipo2.foto)} style={styles.log} />
                     </View>
                     <View style={styles.chartContainer}>
-                        {stat.map((stat, index) => (
-                            <View key={index} style={styles.chartItem}>
-                                <Text style={styles.chartLabel}>{stat.label}</Text>
-                                <BarChart
-                                    data={{
-                                        labels: ['Equipo 1', 'Equipo 2'],
-                                        datasets: [
-                                            { data: [stat.team1, stat.team2] },
-                                        ],
-                                    }}
-                                    width={widthScreen * 0.4}
-                                    height={180}
-                                    chartConfig={chartConfig}
-                                    style={styles.charts}
-                                    fromZero={true}
-                                    withVerticalLines={false}
-                                    withHorizontalLines={false}
-                                    withInnerLines={false}
-                                    withOuterLines={false}
-                                />
-                            </View>
+                    {Object.entries(stat).map(([idAccion, data]) => (
+                    <View key={idAccion} style={styles.chartItem}>
+                        <Text style={styles.chartLabel}>Acción: {data.description}</Text>
+                        <BarChart
+                            data={{
+                                labels: ['Equipo 1', 'Equipo 2'],
+                                datasets: [
+                                 {
+                                    data: [data.count, 0], // Mostramos el conteo como un único valor.
+                                },
+                                ],
+                            }}
+                            width={widthScreen * 0.4}
+                            height={180}
+                            chartConfig={chartConfig}
+                            style={styles.charts}
+                            fromZero={true}
+                            withVerticalLines={false}
+                            withHorizontalLines={false}
+                            withInnerLines={false}
+                            withOuterLines={false}
+                            />
+                        </View>
                         ))}
                     </View>
                 </View>
@@ -274,6 +289,14 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 16,
     },
+    message: {
+        fontSize: 16,
+        color: '#555',
+        textAlign: 'center',
+        marginVertical: 10,
+        marginTop: 20
+    },
+      
 });
 
 export default App;
