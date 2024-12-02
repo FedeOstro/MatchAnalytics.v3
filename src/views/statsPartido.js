@@ -44,34 +44,40 @@ const App = ({ route, navigation }) => {
         }
     };
 
-    useEffect(() =>{
+    useEffect(() => {
         const fetchData = async () => {
-            try{
-                const jugadores = await getAllPlayers(idequipo1)
-                const plays = fillImage(jugadores)
-                setJugadores(plays)
-                const partido = await fetchPartidoById(id_partido)
-                setPartido(partido)
-                const equipo1 = await fetchEquipoById(idequipo1)
-                setEquipo1(equipo1)
-                const equipo2 = await fetchEquipoById(idequipo2)
-                setEquipo1(equipo2)
+            try {
+                const jugadores = await getAllPlayers(idequipo1);
+                const plays = fillImage(jugadores);
+                setJugadores(plays);
+    
+                const partido = await fetchPartidoById(id_partido);
+                setPartido(partido);
+    
+                const equipo1 = await fetchEquipoById(idequipo1);
+                setEquipo1(equipo1);
+    
+                const equipo2 = await fetchEquipoById(idequipo2);
+                setEquipo2(equipo2); // Debe ser setEquipo2, no setEquipo1.
+    
                 const notes = await notesXMatch(partido[0].id_deporte);
                 const statsResults = {};
                 for (const note of notes) {
-                const count = await fetchNotesXMatch(partido[0].id_partido, note.id_accion);
-                statsResults[note.id_accion] = {
-                    count,
-                    description: note.descripcion,
-                };
+                    const count = await fetchNotesXMatch(partido[0].id_partido, note.id_accion);
+                    statsResults[note.id_accion] = {
+                        count,
+                        description: note.descripcion,
+                    };
                 }
+                console.log(statsResults);
                 setStats(statsResults);
-            }catch(error){
-                console.log(error)
+            } catch (error) {
+                console.error(error);
             }
-        }
-        fetchData()
-    })
+        };
+        fetchData();
+    }, []); // Array vacío evita la reejecución constante.
+    
 
 
     const chartConfig = {

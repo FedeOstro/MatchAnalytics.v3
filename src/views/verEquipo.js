@@ -17,7 +17,7 @@ const TeamScreen = ({ route, navigation }) => {
     const [players, setPlayers] = useState([])
     const [showAllPartidos, setShowAllPartidos] = useState(false);
     const [equipo, setEquipo] = useState([])
-    const [deporte, setDeporte] = useState('')
+    const [deporte, setDeporte] = useState([])
     const [showAllPlayers, setShowAllPlayers] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [nombre, setNombre] = useState('');
@@ -43,12 +43,10 @@ const TeamScreen = ({ route, navigation }) => {
             const play = await getAllPlayers(idEquipo)
             const players = await fillImage(play)
             setPlayers(players)
-            // const team = await fetchEquipoById(idEquipo)
-            // console.log(team)
-            // setEquipo(team)
-            // const depor = await fetchNameSport(team[0].id_deporte)
-            // console.log(depor)
-            // setDeporte(depor)
+            const team = await fetchEquipoById(idEquipo)
+            setEquipo(team)
+            const depor = await fetchNameSport(team[0].id_deporte)
+            setDeporte(depor)
           }catch(error){
             console.log(error)
           }
@@ -149,8 +147,8 @@ const TeamScreen = ({ route, navigation }) => {
                 <View style={styles.header}>
                     <Image source={require('../images/football.png')} style={styles.logo} />
                     <View>
-                        <Text style={styles.teamName}></Text>
-                        <Text style={styles.sportType}></Text>
+                        <Text style={styles.teamName}>{equipo.length > 0 ? equipo[0].nombre : 'Cargando...'}</Text>
+                        <Text style={styles.sportType}>{deporte.length > 0 && deporte[0].nombre ? deporte[0].nombre : 'Cargando deporte...'}</Text>
                     </View>
                 </View>
                 <View style={styles.scrollData}>
