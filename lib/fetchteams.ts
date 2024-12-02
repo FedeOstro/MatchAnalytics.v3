@@ -45,3 +45,13 @@ export const fetchSport = async (equipo) => {
     return data
   }
 }
+
+export const fetchNameSport = async(id_deporte) => {
+  const { data, error } = await supabase.from('deportes').select('nombre').eq('id_deporte', id_deporte)
+  console.log(data)
+  if(error){
+    console.log(error)
+  }else{
+    return data
+  }
+}

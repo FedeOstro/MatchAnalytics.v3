@@ -85,6 +85,10 @@ function MyStack() {
               name="ConfigAnot"
               component={ConfigAnot}
             />
+            <Stack.Screen 
+            name="login" 
+            component={login}
+          />
           </>
         ) : (
           <>

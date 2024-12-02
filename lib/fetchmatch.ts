@@ -45,7 +45,6 @@ export const fetchPartodoByTeam = async (Equipo) => {
 }
 
 export const updateMatch = async (id_partido: Int8Array, duration: Int8Array, pEqLocal: Int8Array, pEqOf: Int8Array) => {
-  console.log("Hola papa")
   await supabase.from('partido').update({duracion: duration, puntosEqLocal: pEqLocal, puntosEqOf: pEqOf}).eq('id_partido', id_partido)
   return
 }

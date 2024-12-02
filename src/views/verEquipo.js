@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
-  Dimensions, 
-  Image, 
-  FlatList, 
-  TextInput, 
-  Modal, 
-  Alert 
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Image, FlatList, TextInput, Modal, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import PlayerItem from '../components/Jugadores';
 import Partido from '../components/Partido';
 import Header from '../components/Header';
-import { supabase } from '../../lib/supabase'
+import { fetchEquipoById, fetchNameSport } from '../../lib/fetchteams'
 import { fetchPartodoByTeam } from '../../lib/fetchmatch'
 import { getAllPlayers, insertPlayers } from '../../lib/fetchplayers'
 
@@ -28,9 +16,9 @@ const TeamScreen = ({ route, navigation }) => {
     const [partidos, setPartidos] = useState([])
     const [players, setPlayers] = useState([])
     const [showAllPartidos, setShowAllPartidos] = useState(false);
+    const [equipo, setEquipo] = useState([])
+    const [deporte, setDeporte] = useState('')
     const [showAllPlayers, setShowAllPlayers] = useState(false);
-
-    // New state for modal and player addition
     const [modalVisible, setModalVisible] = useState(false);
     const [nombre, setNombre] = useState('');
     const [numero, setNumero] = useState('');
@@ -53,8 +41,14 @@ const TeamScreen = ({ route, navigation }) => {
             const data2 = await fetchPartodoByTeam(idEquipo)
             setPartidos(data2)
             const play = await getAllPlayers(idEquipo)
-            const players = fillImage(play)
+            const players = await fillImage(play)
             setPlayers(players)
+            // const team = await fetchEquipoById(idEquipo)
+            // console.log(team)
+            // setEquipo(team)
+            // const depor = await fetchNameSport(team[0].id_deporte)
+            // console.log(depor)
+            // setDeporte(depor)
           }catch(error){
             console.log(error)
           }
@@ -155,8 +149,8 @@ const TeamScreen = ({ route, navigation }) => {
                 <View style={styles.header}>
                     <Image source={require('../images/football.png')} style={styles.logo} />
                     <View>
-                        <Text style={styles.teamName}>Equipo 2</Text>
-                        <Text style={styles.sportType}>Deporte: Basquet</Text>
+                        <Text style={styles.teamName}></Text>
+                        <Text style={styles.sportType}></Text>
                     </View>
                 </View>
                 <View style={styles.scrollData}>

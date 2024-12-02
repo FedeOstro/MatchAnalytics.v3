@@ -90,7 +90,6 @@ const ConfigPartido = ({ navigation }) => {
       const user = await AsyncStorage.getItem('user')
       const userParsed = JSON.parse(user)
       const idusuario = userParsed.id;
-      console.log("Hola padre" + idusuario)
       const idOp = await insertTeam(oponente, foto, deporte[0].id_deporte, idusuario)
       const data = await insertMatch(deporte[0].id_equipo, idOp, fecha, name, deporte[0].id_deporte)
       Vibration.vibrate(500)

@@ -62,13 +62,13 @@ const App = ({ route, navigation }) => {
                 const count = await fetchNotesXMatch(partido[0].id_partido, note.id_accion);
                 statsResults[note.id_accion] = {
                     count,
-                    description: note.descripcion, // Guardamos la descripción de la acción.
+                    description: note.descripcion,
                 };
                 }
                 setStats(statsResults);
-                }catch(error){
-                    console.log(error)
-                }
+            }catch(error){
+                console.log(error)
+            }
         }
         fetchData()
     })
