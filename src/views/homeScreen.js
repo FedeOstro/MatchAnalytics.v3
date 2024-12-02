@@ -72,7 +72,6 @@ const HomeScreen = ({navigation}) => {
     }
   }
   
-
   const getImageSource = (foto) => {
     switch (foto) {
       case '../images/football.png':
@@ -83,6 +82,15 @@ const HomeScreen = ({navigation}) => {
         return require('../images/basque.png');
       default:
         return require('../images/log.png');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear();
+      navigation.navigate('login') 
+    } catch (error) {
+      console.log('Error during logout:', error);
     }
   };
 
@@ -109,9 +117,16 @@ const HomeScreen = ({navigation}) => {
     }, [])
   );
 
+
   return (
       <View style={styles.container}>
         <View style={styles.header1}>
+          <TouchableOpacity 
+            style={styles.logoutButton} 
+            onPress={handleLogout}
+          >
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
           <Header></Header>
         </View>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -257,8 +272,21 @@ const styles = StyleSheet.create({
   },
   header1: {
     height: 70,
-    
-  }
+    position: 'relative',
+  },
+  logoutButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 10,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
 });
 
 export default HomeScreen

@@ -29,11 +29,10 @@ function LoginScreen({ navigation }) {
         await AsyncStorage.setItem('user', JSON.stringify(userExists[0]));
         navigation.navigate('Home');
       } catch (e) {
+        Vibration.vibrate();
+        Alert.alert('Error', 'Usuario o contraseña incorrectos');
         console.log(e);
       }
-    } else {
-      Vibration.vibrate();
-      Alert.alert('Error', 'Usuario o contraseña incorrectos');
     }
   };
 
@@ -139,7 +138,6 @@ function LoginScreen({ navigation }) {
                 <Text style={styles.modalButtonText}>Aceptar</Text>
               </TouchableOpacity>
 
-              {/* Botón para Cerrar */}
               <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
                 <Text style={styles.modalButtonText}>Cerrar</Text>
               </TouchableOpacity>
